@@ -1,4 +1,0 @@
-﻿seatId,sectionId,row,number,status,version
-Seat001,VIP,R1,1,AVAILABLE,0
-Seat002,VIP,R1,2,AVAILABLE,0
-Seat003,Standard,R2,15,BOOKED,1
