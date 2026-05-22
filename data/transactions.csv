@@ -1,3 +1,0 @@
-﻿transactionId,fanId,matchId,seatId,timestamp,status
-TX001,F001,M001,Seat001,2026-05-19T13:40:00,SUCCESS
-TX002,F002,M001,Seat002,2026-05-19T13:41:00,SUCCESS
