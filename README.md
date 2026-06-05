@@ -1,5 +1,10 @@
 # Stadium Ticket Booking System
-
+# GROUP 4
+# Thành Viên Nhóm
+1 Lương Đức Duy
+2 Phan Văn Bảo
+3 Võ Xuân Long
+4 Trương Hình Anh Tuấn
 ## 📌 Giới thiệu
 Hệ thống đặt vé sân vận động cho phép quản lý sinh viên, đội bóng, trận đấu, vé, thanh toán và báo cáo. Người dùng có thể đăng ký tài khoản, đặt vé, thanh toán và xem lịch sử giao dịch.
 
