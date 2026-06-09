@@ -1,6 +1,6 @@
 ⚽ Football Match Ticket Booking System – Hệ thống Quản lý Đặt Vé Bóng Đá
 
-Đồ án môn học LAB211 (OOP with Java) — Nhóm 3
+Đồ án môn học LAB211 (OOP with Java) — Nhóm 4
 
 🎯 1. RESEARCH QUESTION (Câu hỏi Nghiên cứu)
 
@@ -27,7 +27,7 @@ Cấu trúc Dữ liệu: Lưu trữ thuần bằng File Text (CSV) cho các Enti
 
 Ngôn ngữ & Thư viện: Java Core (JDK 8+), sử dụng OOP, Collections Framework và File I/O. Không sử dụng thư viện bên thứ ba (Pure Java).
 
-👨‍💻 4. THÀNH VIÊN NHÓM (GROUP 3)
+👨‍💻 4. THÀNH VIÊN NHÓM (GROUP 4)
 
 | STT | Họ và Tên             | Vai trò                                 |
 | --- | --------------------- | --------------------------------------- |
