@@ -1,135 +1,134 @@
-package com.ticketbooking.util;
-
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDate;
 import java.util.Random;
 
 public class DataGenerator {
+    static Random rand = new Random();
 
-    static Random random = new Random();
+    public static void main(String[] args) throws IOException {
+        int stadiumCount = 5; // số sân vận động
+        int seatsPerStadium = 4000; // mỗi sân 4000 ghế
+        int matchesPerStadium = 5; // mỗi sân có 5 trận
+        int fansCount = 50000; // số fan
+        int transactionsCount = 50000;
 
-    static final int STADIUM_COUNT = 20;
-    static final int SECTION_PER_STADIUM = 5;
-    static final int SEAT_PER_SECTION = 120;
-
-    public static void main(String[] args) {
-
-        generateStadiums();
-        generateSections();
-        generateSeats();
-
-        System.out.println("Generate completed!");
+        generateStadiums(stadiumCount);
+        generateSections(stadiumCount);
+        generateSeats(stadiumCount, seatsPerStadium);
+        generateFans(fansCount);
+        generateMatches(stadiumCount, matchesPerStadium);
+        generateTickets(stadiumCount, seatsPerStadium, matchesPerStadium);
+        generateTransactions(transactionsCount, fansCount);
+        System.out.println("✅ CSV files generated successfully in /data folder!");
     }
 
-    // =========================
-    // STADIUMS
-    // =========================
-    public static void generateStadiums() {
-
-        try (FileWriter fw = new FileWriter("data/stadiums.csv")) {
-
-            fw.write("stadiumId,name,capacity,location\n");
-
-            for (int i = 1; i <= STADIUM_COUNT; i++) {
-
-                String id = String.format("STD%03d", i);
-                String name = "Stadium " + i;
-                int capacity = 20000 + random.nextInt(30000);
-                String location = "City " + i;
-
-                fw.write(id + "," + name + "," + capacity + "," + location + "\n");
+    static void generateStadiums(int count) throws IOException {
+        try (PrintWriter pw = new PrintWriter("data/stadiums.csv")) {
+            pw.println("stadiumId,name,location,capacity");
+            for (int i = 1; i <= count; i++) {
+                pw.printf("S%d,Stadium %d,City %d,4000%n", i, i, i);
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    // =========================
-    // SECTIONS
-    // =========================
-    public static void generateSections() {
-
-        try (FileWriter fw = new FileWriter("data/sections.csv")) {
-
-            fw.write("sectionId,stadiumId,name,capacity\n");
-
-            int sectionCounter = 1;
-
-            for (int s = 1; s <= STADIUM_COUNT; s++) {
-
-                String stadiumId = String.format("STD%03d", s);
-
-                for (int i = 1; i <= SECTION_PER_STADIUM; i++) {
-
-                    String sectionId = String.format("SEC%03d", sectionCounter++);
-
-                    String name = "Section " + i;
-
-                    int capacity = 1000 + random.nextInt(500);
-
-                    fw.write(sectionId + "," +
-                            stadiumId + "," +
-                            name + "," +
-                            capacity + "\n");
+    static void generateSections(int stadiumCount) throws IOException {
+        try (PrintWriter pw = new PrintWriter("data/sections.csv")) {
+            pw.println("sectionId,stadiumId,name,type");
+            int secId = 1;
+            String[] names = { "A", "B", "C", "D" };
+            for (int s = 1; s <= stadiumCount; s++) {
+                int vipIndex = rand.nextInt(4); // chọn ngẫu nhiên 1 khu VIP
+                for (int i = 0; i < 4; i++) {
+                    String type = (i == vipIndex) ? "VIP" : "NORMAL";
+                    pw.printf("SEC%d,S%d,Section %s,%s%n", secId++, s, names[i], type);
                 }
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    // =========================
-    // SEATS
-    // =========================
-    public static void generateSeats() {
-
-        try (FileWriter fw = new FileWriter("data/seats.csv")) {
-
-            fw.write("seatId,sectionId,rowNumber,seatNumber,type,status\n");
-
-            int seatCounter = 1;
-
-            int totalSections = STADIUM_COUNT * SECTION_PER_STADIUM;
-
-            for (int sec = 1; sec <= totalSections; sec++) {
-
-                String sectionId = String.format("SEC%03d", sec);
-
-                for (int i = 1; i <= SEAT_PER_SECTION; i++) {
-
-                    String seatId = String.format("SEAT%05d", seatCounter++);
-
-                    char row = (char) ('A' + (i / 20));
-
-                    int seatNumber = i;
-
-                    String type;
-
-                    if (i <= 20) {
-                        type = "VIP";
-                    } else if (i <= 80) {
-                        type = "Normal";
+    static void generateSeats(int stadiumCount, int seatsPerStadium) throws IOException {
+        try (PrintWriter pw = new PrintWriter("data/seats.csv")) {
+            pw.println("seatId,sectionId,row,number,status");
+            int seatId = 1;
+            for (int s = 1; s <= stadiumCount; s++) {
+                int vipIndex = rand.nextInt(4); // section VIP
+                int vipSectionId = (s - 1) * 4 + vipIndex + 1;
+                for (int i = 1; i <= seatsPerStadium; i++) {
+                    String section;
+                    if (i <= seatsPerStadium * 0.1) {
+                        section = "SEC" + vipSectionId; // 10% ghế VIP
                     } else {
-                        type = "Economy";
+                        int normalIndex;
+                        do {
+                            normalIndex = rand.nextInt(4) + 1;
+                        } while (normalIndex == vipIndex + 1);
+                        section = "SEC" + ((s - 1) * 4 + normalIndex);
                     }
-
-                    String status = "Available";
-
-                    fw.write(seatId + "," +
-                            sectionId + "," +
-                            row + "," +
-                            seatNumber + "," +
-                            type + "," +
-                            status + "\n");
+                    pw.printf("SEAT%d,%s,%d,%d,AVAILABLE%n", seatId++, section, (i - 1) / 100 + 1, (i - 1) % 100 + 1);
                 }
             }
+        }
+    }
 
-            System.out.println("Generated more than 10,000 seats!");
+    static void generateFans(int totalFans) throws IOException {
+        try (PrintWriter pw = new PrintWriter("data/fans.csv")) {
+            pw.println("fanId,fullName,email,phone,birthYear");
+            for (int i = 1; i <= totalFans; i++) {
+                pw.printf("FAN%d,Fan %d,fan%d@gmail.com,09%08d,%d%n",
+                        i, i, i, rand.nextInt(99999999), 1980 + rand.nextInt(25));
+            }
+        }
+    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+    static void generateMatches(int stadiumCount, int matchesPerStadium) throws IOException {
+        try (PrintWriter pw = new PrintWriter("data/matches.csv")) {
+            pw.println("matchId,homeTeam,awayTeam,date,stadiumId");
+            int matchId = 1;
+            for (int s = 1; s <= stadiumCount; s++) {
+                for (int m = 1; m <= matchesPerStadium; m++) {
+                    LocalDate date = LocalDate.of(2026, 7, m + s);
+                    pw.printf("M%d,Team%d,Team%d,%s,S%d%n", matchId++, rand.nextInt(50) + 1, rand.nextInt(50) + 1, date,
+                            s);
+                }
+            }
+        }
+    }
+
+    static void generateTickets(int stadiumCount, int seatsPerStadium, int matchesPerStadium) throws IOException {
+        try (PrintWriter pw = new PrintWriter("data/tickets.csv")) {
+            pw.println("ticketId,matchId,seatId,type,price,date,status");
+            int ticketId = 1;
+            for (int s = 1; s <= stadiumCount; s++) {
+                for (int m = 1; m <= matchesPerStadium; m++) {
+                    LocalDate date = LocalDate.of(2026, 7, m + s);
+                    for (int seat = 1; seat <= seatsPerStadium; seat++) {
+                        String type = (seat <= seatsPerStadium * 0.1) ? "VIP" : "NORMAL";
+                        int price = type.equals("VIP") ? 800000 : 300000;
+                        String status = rand.nextBoolean() ? "Available" : "Sold";
+                        pw.printf("T%d,M%d,SEAT%d,%s,%d,%s,%s%n", ticketId++, (s - 1) * matchesPerStadium + m,
+                                ((s - 1) * seatsPerStadium) + seat, type, price, date, status);
+                    }
+                }
+            }
+        }
+    }
+
+    static void generateTransactions(int totalTrans, int totalFans) throws IOException {
+        try (PrintWriter pw = new PrintWriter("data/transactions.csv")) {
+            pw.println("transactionId,ticketId,fanId,amount,paymentMethod,status");
+            for (int i = 1; i <= totalTrans; i++) {
+                String method = (i % 2 == 0) ? "ONLINE" : "CASH";
+                String status = method.equals("ONLINE") ? "CONFIRMED" : "SUCCESS";
+                int amount = (method.equals("ONLINE")) ? 800000 : 300000;
+                int fanId = rand.nextInt(totalFans) + 1;
+
+                pw.printf("TR%d,T%d,FAN%d,%d,%s,%s%n", i, i, fanId, amount, method, status);
+
+                // thêm refund cho 5% vé ONLINE
+                if (method.equals("ONLINE") && rand.nextInt(100) < 5) {
+                    pw.printf("TR%d,T%d,FAN%d,%d,%s,REFUNDED%n", totalTrans + i, i, fanId, amount, method, "REFUNDED");
+                }
+            }
         }
     }
 }
