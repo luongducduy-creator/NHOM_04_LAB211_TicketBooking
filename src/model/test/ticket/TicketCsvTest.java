@@ -1,5 +1,5 @@
-package test.ticket;
+package model.test.ticket;
 
 public class TicketCsvTest {
-    
+
 }
