@@ -1,5 +1,7 @@
-package model.ticket;
+package ticketbooking.model.ticket;
 
-public class TicketStatus {
-    
+public enum TicketStatus {
+    AVAILABLE,
+    SOLD,
+    CANCELLED
 }
