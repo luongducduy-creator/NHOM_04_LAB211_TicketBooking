@@ -4,15 +4,17 @@ import model.fan.Fan;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 
 public class FanRepository {
     private final String FILE_NAME = "data/fans.csv";
 
-    // thêm fan
+    // CREATE
     public void addFan(Fan fan) {
 
         try {
+
             FileWriter fw = new FileWriter(FILE_NAME, true);
 
             fw.write(fan.toString());
@@ -21,11 +23,12 @@ public class FanRepository {
             fw.close();
 
         } catch (Exception e) {
+
             System.out.println("Loi ghi file");
         }
     }
 
-    // đọc tất cả fan
+    // READ ALL
     public ArrayList<Fan> getAllFans() {
 
         ArrayList<Fan> list = new ArrayList<>();
@@ -33,7 +36,8 @@ public class FanRepository {
         try {
 
             BufferedReader br =
-                    new BufferedReader(new FileReader(FILE_NAME));
+                    new BufferedReader(
+                            new FileReader(FILE_NAME));
 
             String line;
 
@@ -53,13 +57,14 @@ public class FanRepository {
             br.close();
 
         } catch (Exception e) {
+
             System.out.println("Loi doc file");
         }
 
         return list;
     }
 
-    // tìm fan theo id
+    // READ BY ID
     public Fan findById(String id) {
 
         ArrayList<Fan> fans = getAllFans();
@@ -67,10 +72,87 @@ public class FanRepository {
         for (Fan fan : fans) {
 
             if (fan.getId().equals(id)) {
+
                 return fan;
             }
         }
 
         return null;
+    }
+
+    // UPDATE
+    public void updateFan(Fan newFan) {
+
+        ArrayList<Fan> fans = getAllFans();
+
+        try {
+
+            FileWriter fw = new FileWriter(FILE_NAME);
+
+            for (Fan fan : fans) {
+
+                if (fan.getId().equals(newFan.getId())) {
+
+                    fw.write(newFan.toString());
+
+                } else {
+
+                    fw.write(fan.toString());
+                }
+
+                fw.write("\n");
+            }
+
+            fw.close();
+
+        } catch (Exception e) {
+
+            System.out.println("Loi cap nhat fan");
+        }
+    }
+
+    // DELETE
+    public void deleteFan(String id) {
+
+        ArrayList<Fan> fans = getAllFans();
+
+        try {
+
+            FileWriter fw = new FileWriter(FILE_NAME);
+
+            for (Fan fan : fans) {
+
+                if (!fan.getId().equals(id)) {
+
+                    fw.write(fan.toString());
+                    fw.write("\n");
+                }
+            }
+
+            fw.close();
+
+        } catch (Exception e) {
+
+            System.out.println("Loi xoa fan");
+        }
+    }
+
+    // FIND BY CONDITION
+    public ArrayList<Fan> findByCondition(
+            Predicate<Fan> condition) {
+
+        ArrayList<Fan> result = new ArrayList<>();
+
+        ArrayList<Fan> fans = getAllFans();
+
+        for (Fan fan : fans) {
+
+            if (condition.test(fan)) {
+
+                result.add(fan);
+            }
+        }
+
+        return result;
     }
 }
