@@ -1,48 +1,75 @@
-package model.ticket;
+package ticketbooking.model.ticket;
 
 public class Ticket {
-    private String id;
-    private String customerName;
+    private String ticketId;
+    private String matchId;
+    private String seatId;
+    private String seatType;
+    private double price;
+    private String date;
     private TicketStatus status;
 
-    public Ticket(String id, String customerName, TicketStatus status) {
-        this.id = id;
-        this.customerName = customerName;
+    public Ticket(String ticketId, String matchId, String seatId, String seatType,
+            double price, String date, TicketStatus status) {
+        this.ticketId = ticketId;
+        this.matchId = matchId;
+        this.seatId = seatId;
+        this.seatType = seatType;
+        this.price = price;
+        this.date = date;
         this.status = status;
     }
 
-    public String getId() {
-        return id;
+    public String getTicketId() {
+        return ticketId;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getMatchId() {
+        return matchId;
+    }
+
+    public String getSeatId() {
+        return seatId;
+    }
+
+    public String getSeatType() {
+        return seatType;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getDate() {
+        return date;
     }
 
     public TicketStatus getStatus() {
         return status;
     }
 
-    public void setStatus(TicketStatus status) {
-        this.status = status;
-    }
-
     @Override
     public String toString() {
-        return id + "," + customerName + "," + status;
+        return ticketId + "," + matchId + "," + seatId + "," + seatType + "," +
+                price + "," + date + "," + status;
     }
 
     public static Ticket fromCsv(String line) {
         String[] parts = line.split(",");
-        // bỏ qua dòng tiêu đề hoặc dòng lỗi
-        if (parts[0].equalsIgnoreCase("ticketId") || parts[0].equalsIgnoreCase("id")) {
+        if (parts[0].equalsIgnoreCase("ticketId")) {
             return null;
         }
         try {
-            return new Ticket(parts[0], parts[1], TicketStatus.valueOf(parts[2].toUpperCase()));
+            String ticketId = parts[0];
+            String matchId = parts[1];
+            String seatId = parts[2];
+            String seatType = parts[3];
+            double price = Double.parseDouble(parts[4]);
+            String date = parts[5];
+            TicketStatus status = TicketStatus.valueOf(parts[6].toUpperCase());
+            return new Ticket(ticketId, matchId, seatId, seatType, price, date, status);
         } catch (Exception e) {
-            System.err.println("⚠️ Bỏ qua dòng không hợp lệ: " + line);
-            return null;
+            return null; // silently ignore invalid lines
         }
     }
 }
