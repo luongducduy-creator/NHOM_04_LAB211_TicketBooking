@@ -34,6 +34,15 @@ public class Ticket {
 
     public static Ticket fromCsv(String line) {
         String[] parts = line.split(",");
-        return new Ticket(parts[0], parts[1], TicketStatus.valueOf(parts[2]));
+        // bỏ qua dòng tiêu đề hoặc dòng lỗi
+        if (parts[0].equalsIgnoreCase("ticketId") || parts[0].equalsIgnoreCase("id")) {
+            return null;
+        }
+        try {
+            return new Ticket(parts[0], parts[1], TicketStatus.valueOf(parts[2].toUpperCase()));
+        } catch (Exception e) {
+            System.err.println("⚠️ Bỏ qua dòng không hợp lệ: " + line);
+            return null;
+        }
     }
 }
