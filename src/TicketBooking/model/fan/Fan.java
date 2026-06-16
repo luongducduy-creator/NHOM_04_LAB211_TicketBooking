@@ -1,7 +1,7 @@
-package model.fan;
+package ticketbooking.model.fan;
 
 public class Fan {
-     private String id;
+    private String id;
     private String name;
     private String email;
 

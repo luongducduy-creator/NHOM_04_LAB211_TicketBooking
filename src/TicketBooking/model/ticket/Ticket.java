@@ -69,7 +69,7 @@ public class Ticket {
             TicketStatus status = TicketStatus.valueOf(parts[6].toUpperCase());
             return new Ticket(ticketId, matchId, seatId, seatType, price, date, status);
         } catch (Exception e) {
-            return null; // silently ignore invalid lines
+            return null; // ignore invalid lines silently
         }
     }
 }
