@@ -1,7 +1,7 @@
-package test.fan;
+package ticketbooking.test.fan;
 
-import model.fan.Fan;
-import repository.FanRepository;
+import ticketbooking.model.fan.Fan;
+import ticketbooking.repository.FanRepository;
 
 public class FanCsvTest {
     public static void main(String[] args) {
@@ -12,8 +12,7 @@ public class FanCsvTest {
         Fan fan = new Fan(
                 "F004",
                 "Duy",
-                "duy@gmail.com"
-        );
+                "duy@gmail.com");
 
         repo.addFan(fan);
 
@@ -22,9 +21,8 @@ public class FanCsvTest {
 
             System.out.println(
                     f.getId() + " - " +
-                    f.getName() + " - " +
-                    f.getEmail()
-            );
+                            f.getName() + " - " +
+                            f.getEmail());
         }
 
         // tìm kiếm

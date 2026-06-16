@@ -1,5 +1,5 @@
-package model.transaction;
+package ticketbooking.model.transaction;
 
 public class Transaction {
-    
+
 }

@@ -1,5 +1,5 @@
-package model.base;
+package ticketbooking.model.base;
 
 public class BaseEntity {
-    
+
 }

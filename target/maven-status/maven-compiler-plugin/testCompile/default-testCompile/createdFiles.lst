@@ -1,0 +1,10 @@
+test\core\CsvRepositoryTest.class
+test\ticket\TicketCsvTest.class
+ticketbooking\test\fan\FanCsvTest.class
+ticketbooking\test\fan\FanRepositoryTest.class
+test\core\TransactionRepositoryTest.class
+test\core\MatchCsvTest.class
+test\core\BaseEntityTest.class
+test\seat\SeatRepositoryTest.class
+test\seat\SeatCsvTest.class
+test\ticket\TicketRepositoryTest.class

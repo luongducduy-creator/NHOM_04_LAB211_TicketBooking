@@ -1,11 +1,10 @@
-package repository;
+package ticketbooking.repository;
 
-import model.fan.Fan;
+import ticketbooking.model.fan.Fan;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.function.Predicate;
-
 
 public class FanRepository {
     private final String FILE_NAME = "data/fans.csv";
@@ -34,10 +33,8 @@ public class FanRepository {
         ArrayList<Fan> list = new ArrayList<>();
 
         try {
-
-            BufferedReader br =
-                    new BufferedReader(
-                            new FileReader(FILE_NAME));
+            BufferedReader br = new BufferedReader(
+                    new FileReader(FILE_NAME));
 
             String line;
 
@@ -48,8 +45,7 @@ public class FanRepository {
                 Fan fan = new Fan(
                         data[0],
                         data[1],
-                        data[2]
-                );
+                        data[2]);
 
                 list.add(fan);
             }
