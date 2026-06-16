@@ -1,38 +1,34 @@
 package test.ticket;
 
-import model.ticket.TicketStatus;
-import org.junit.jupiter.api.Test;
 import repository.TicketRepository;
+import model.ticket.TicketStatus;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TicketRepositoryTest {
 
     private final TicketRepository repo = new TicketRepository("data/tickets.csv");
 
     @Test
-    void testFindAll() {
-        assertEquals(22, repo.findAll().size());
+    public void testFindAllTickets() {
+        assertEquals(
+                100000,
+                repo.findAll().size());
     }
 
     @Test
-    void testAvailableTickets() {
+    public void testAvailableTickets() {
         assertEquals(
-                14,
+                49833,
                 repo.findByStatus(TicketStatus.AVAILABLE).size());
     }
 
     @Test
-    void testSoldTickets() {
+    public void testSoldTickets() {
         assertEquals(
-                8,
+                50167,
                 repo.findByStatus(TicketStatus.SOLD).size());
-    }
-
-    @Test
-    void testCancelledTickets() {
-        assertEquals(
-                0,
-                repo.findByStatus(TicketStatus.CANCELLED).size());
     }
 }

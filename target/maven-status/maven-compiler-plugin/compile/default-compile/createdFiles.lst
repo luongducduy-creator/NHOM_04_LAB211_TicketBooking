@@ -1,0 +1,17 @@
+model\fan\Fan.class
+model\ticket\Ticket.class
+repository\TicketRepository.class
+repository\FanRepository.class
+DataGenerator.class
+repository\CsvRepository.class
+repository\TransactionRepository.class
+model\seat\Seat.class
+model\seat\Section.class
+model\ticket\TicketStatus.class
+model\match\MatchStatus.class
+repository\SeatRepository.class
+model\match\Match.class
+model\base\BaseEntity.class
+model\fan\Role.class
+model\transaction\Transaction.class
+model\seat\SeatType.class

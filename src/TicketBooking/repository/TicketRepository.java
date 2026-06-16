@@ -2,11 +2,13 @@ package repository;
 
 import model.ticket.Ticket;
 import model.ticket.TicketStatus;
+
 import java.io.*;
 import java.util.*;
-import java.util.stream.*;
+import java.util.stream.Collectors;
 
 public class TicketRepository {
+
     private final String filePath;
 
     public TicketRepository(String filePath) {
@@ -14,16 +16,26 @@ public class TicketRepository {
     }
 
     public List<Ticket> findAll() {
-        try {
-            return new BufferedReader(new FileReader(filePath))
-                    .lines()
-                    .map(Ticket::fromCsv)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+        List<Ticket> tickets = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                Ticket ticket = Ticket.fromCsv(line);
+
+                if (ticket != null) {
+                    tickets.add(ticket);
+                }
+            }
+
         } catch (IOException e) {
             System.err.println("Cannot read file: " + filePath);
-            return new ArrayList<>();
+            e.printStackTrace();
         }
+
+        return tickets;
     }
 
     public List<Ticket> findByStatus(TicketStatus status) {
