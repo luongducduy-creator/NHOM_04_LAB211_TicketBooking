@@ -1,6 +1,6 @@
-package repository;
+package ticketbooking.repository;
 
-import model.fan.Fan;
+import ticketbooking.model.fan.Fan;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package repository;
+package ticketbooking.repository;
 
 public class CsvRepository {
 
