@@ -1,7 +1,7 @@
-package ticketbooking.test.fan;
+package test.fan;
 
-import ticketbooking.model.fan.Fan;
-import ticketbooking.repository.FanRepository;
+import model.fan.Fan;
+import repository.FanRepository;
 
 public class FanCsvTest {
     public static void main(String[] args) {
