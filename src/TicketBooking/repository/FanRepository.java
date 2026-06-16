@@ -1,6 +1,6 @@
-package ticketbooking.repository;
+package repository;
 
-import ticketbooking.model.fan.Fan;
+import model.fan.Fan;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -33,14 +33,8 @@ public class FanRepository {
         ArrayList<Fan> list = new ArrayList<>();
 
         try {
-
-<<<<<<< HEAD
-            BufferedReader br = new BufferedReader(new FileReader(FILE_NAME));
-=======
-            BufferedReader br =
-                    new BufferedReader(
-                            new FileReader(FILE_NAME));
->>>>>>> e8963dadba99718b5d107e04eb5153af634ac094
+            BufferedReader br = new BufferedReader(
+                    new FileReader(FILE_NAME));
 
             String line;
 

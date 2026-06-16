@@ -1,8 +1,8 @@
 package model.fan;
 
 public enum Role {
-   GUEST,
+    GUEST,
     FAN,
     STAFF,
-    ADMIN 
+    ADMIN
 }

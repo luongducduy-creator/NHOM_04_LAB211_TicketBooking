@@ -1,4 +1,4 @@
-package ticketbooking.model.ticket;
+package model.ticket;
 
 public enum TicketStatus {
     AVAILABLE,

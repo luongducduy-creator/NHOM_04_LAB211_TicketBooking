@@ -1,4 +1,4 @@
-package ticketbooking.model.fan;
+package model.fan;
 
 public class Fan {
     private String id;

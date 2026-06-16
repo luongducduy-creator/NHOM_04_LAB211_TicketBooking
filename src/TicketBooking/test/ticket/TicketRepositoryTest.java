@@ -1,19 +1,38 @@
-package ticketbooking.test.ticket;
+package test.ticket;
 
-import ticketbooking.repository.TicketRepository;
-import ticketbooking.model.ticket.TicketStatus;
-import java.util.List;
+import model.ticket.TicketStatus;
+import org.junit.jupiter.api.Test;
+import repository.TicketRepository;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TicketRepositoryTest {
-    public static void main(String[] args) {
-        String filePath = "data/tickets.csv";
-        TicketRepository repo = new TicketRepository(filePath);
 
-        List<?> all = repo.findAll();
-        System.out.println("Total tickets: " + all.size());
-        System.out.println("Available tickets: " + repo.findByStatus(TicketStatus.AVAILABLE).size());
-        System.out.println("Sold tickets: " + repo.findByStatus(TicketStatus.SOLD).size());
-        System.out.println("Cancelled tickets: " + repo.findByStatus(TicketStatus.CANCELLED).size());
-        System.out.println("Test completed successfully!");
+    private final TicketRepository repo = new TicketRepository("data/tickets.csv");
+
+    @Test
+    void testFindAll() {
+        assertEquals(22, repo.findAll().size());
+    }
+
+    @Test
+    void testAvailableTickets() {
+        assertEquals(
+                14,
+                repo.findByStatus(TicketStatus.AVAILABLE).size());
+    }
+
+    @Test
+    void testSoldTickets() {
+        assertEquals(
+                8,
+                repo.findByStatus(TicketStatus.SOLD).size());
+    }
+
+    @Test
+    void testCancelledTickets() {
+        assertEquals(
+                0,
+                repo.findByStatus(TicketStatus.CANCELLED).size());
     }
 }
