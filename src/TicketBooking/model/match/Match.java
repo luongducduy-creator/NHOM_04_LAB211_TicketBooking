@@ -1,5 +1,5 @@
-package model.match;
+package ticketbooking.model.match;
 
 public class Match {
-    
+
 }
