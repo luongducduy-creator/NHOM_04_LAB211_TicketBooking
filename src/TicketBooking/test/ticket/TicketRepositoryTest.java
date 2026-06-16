@@ -1,4 +1,4 @@
-package test.ticket;
+package ticketbooking.test.ticket;
 
 import ticketbooking.repository.TicketRepository;
 import ticketbooking.model.ticket.*;

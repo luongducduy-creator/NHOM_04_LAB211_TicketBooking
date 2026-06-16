@@ -1,5 +1,6 @@
-package ticketbooking.model.seat;
+package model.seat;
 
-public class SeatType {
-
+public enum SeatType {
+     VIP,
+     NORMAL
 }

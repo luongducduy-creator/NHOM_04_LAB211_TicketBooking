@@ -1,5 +1,5 @@
-package test.seat;
+package ticketbooking.test.seat;
 
 public class SeatCsvTest {
-    
+
 }

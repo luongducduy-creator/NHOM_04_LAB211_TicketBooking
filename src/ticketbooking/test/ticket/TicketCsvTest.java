@@ -1,4 +1,4 @@
-package test.ticket;
+package ticketbooking.test.ticket;
 
 public class TicketCsvTest {
 
