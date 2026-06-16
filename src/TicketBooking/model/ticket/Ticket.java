@@ -1,4 +1,4 @@
-package model.ticket;
+package ticketbooking.model.ticket;
 
 public class Ticket {
     private String ticketId;
