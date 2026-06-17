@@ -1,6 +1,6 @@
-package repository;
+package TicketBooking.repository;
 
-import model.fan.Fan;
+import TicketBooking.model.fan.Fan;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ public class FanRepository {
 
     private final String FILE_NAME = "data/fans.csv";
 
-    // CREATE
     public void addFan(Fan fan) {
 
         try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
@@ -24,7 +23,6 @@ public class FanRepository {
         }
     }
 
-    // READ ALL
     public ArrayList<Fan> getAllFans() {
 
         ArrayList<Fan> list = new ArrayList<>();
@@ -61,13 +59,11 @@ public class FanRepository {
         return list;
     }
 
-    // READ BY ID
     public Fan findById(String id) {
 
         for (Fan fan : getAllFans()) {
 
             if (fan.getId().equals(id)) {
-
                 return fan;
             }
         }
@@ -75,7 +71,6 @@ public class FanRepository {
         return null;
     }
 
-    // UPDATE
     public void updateFan(Fan newFan) {
 
         ArrayList<Fan> fans = getAllFans();
@@ -85,11 +80,8 @@ public class FanRepository {
             for (Fan fan : fans) {
 
                 if (fan.getId().equals(newFan.getId())) {
-
                     fw.write(newFan.toString());
-
                 } else {
-
                     fw.write(fan.toString());
                 }
 
@@ -102,7 +94,6 @@ public class FanRepository {
         }
     }
 
-    // DELETE
     public void deleteFan(String id) {
 
         ArrayList<Fan> fans = getAllFans();
@@ -124,7 +115,6 @@ public class FanRepository {
         }
     }
 
-    // FIND BY CONDITION
     public ArrayList<Fan> findByCondition(
             Predicate<Fan> condition) {
 
@@ -133,7 +123,6 @@ public class FanRepository {
         for (Fan fan : getAllFans()) {
 
             if (condition.test(fan)) {
-
                 result.add(fan);
             }
         }

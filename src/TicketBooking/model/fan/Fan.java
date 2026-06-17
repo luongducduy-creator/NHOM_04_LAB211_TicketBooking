@@ -1,4 +1,4 @@
-package model.fan;
+package TicketBooking.model.fan;
 
 public class Fan {
 
@@ -39,10 +39,6 @@ public class Fan {
 
     @Override
     public String toString() {
-        return id + "," +
-                name + "," +
-                email + "," +
-                phone + "," +
-                birthYear;
+        return id + "," + name + "," + email + "," + phone + "," + birthYear;
     }
 }

@@ -1,7 +1,7 @@
-package test.fan;
+package TicketBooking.test.fan;
 
-import model.fan.Fan;
-import repository.FanRepository;
+import TicketBooking.model.fan.Fan;
+import TicketBooking.repository.FanRepository;
 
 public class FanCsvTest {
 
@@ -22,8 +22,8 @@ public class FanCsvTest {
 
             System.out.println(
                     f.getId() + " - " +
-                            f.getName() + " - " +
-                            f.getEmail());
+                    f.getName() + " - " +
+                    f.getEmail());
         }
 
         Fan result = repo.findById("F001");
@@ -32,7 +32,7 @@ public class FanCsvTest {
 
             System.out.println(
                     "Tim thay: " +
-                            result.getName());
+                    result.getName());
         }
     }
 }

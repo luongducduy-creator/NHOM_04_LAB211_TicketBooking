@@ -1,7 +1,7 @@
-package test.fan;
+package TicketBooking.test.fan;
 
-import model.fan.Fan;
-import repository.FanRepository;
+import TicketBooking.model.fan.Fan;
+import TicketBooking.repository.FanRepository;
 
 public class FanRepositoryTest {
 
@@ -9,7 +9,6 @@ public class FanRepositoryTest {
 
         FanRepository repo = new FanRepository();
 
-        // CREATE
         Fan fan = new Fan(
                 "F004",
                 "Duy",
@@ -21,36 +20,25 @@ public class FanRepositoryTest {
 
         System.out.println("Them fan thanh cong!");
 
-        // READ ALL
         System.out.println("\nDanh sach fan:");
 
         for (Fan f : repo.getAllFans()) {
 
             System.out.println(
                     f.getId() + " - " +
-                            f.getName() + " - " +
-                            f.getEmail());
+                    f.getName() + " - " +
+                    f.getEmail());
         }
 
-        // READ BY ID
         Fan result = repo.findById("F001");
-
-        System.out.println("\nTim thay:");
 
         if (result != null) {
 
             System.out.println(
-                    result.getId() + " - " +
-                            result.getName() + " - " +
-                            result.getEmail());
-
-        } else {
-
-            System.out.println(
-                    "Khong tim thay fan F001");
+                    "\nTim thay: " +
+                    result.getName());
         }
 
-        // UPDATE
         Fan updatedFan = new Fan(
                 "F001",
                 "Duy Updated",
@@ -60,28 +48,10 @@ public class FanRepositoryTest {
 
         repo.updateFan(updatedFan);
 
-        System.out.println(
-                "\nDa cap nhat F001");
+        System.out.println("\nDa cap nhat F001");
 
-        // DELETE
         repo.deleteFan("F004");
 
-        System.out.println(
-                "Da xoa F004");
-
-        // FIND BY CONDITION
-        System.out.println(
-                "\nFan co gmail:");
-
-        for (Fan f :
-                repo.findByCondition(
-                        x -> x.getEmail()
-                                .contains("gmail"))) {
-
-            System.out.println(
-                    f.getId() + " - " +
-                            f.getName() + " - " +
-                            f.getEmail());
-        }
+        System.out.println("Da xoa F004");
     }
 }

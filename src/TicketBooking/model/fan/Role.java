@@ -1,4 +1,4 @@
-package model.fan;
+package TicketBooking.model.fan;
 
 public enum Role {
     GUEST,
