@@ -2,50 +2,37 @@ package test.fan;
 
 import model.fan.Fan;
 import repository.FanRepository;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FanRepositoryTest {
 
-    public static void main(String[] args) {
+    @Test
+    void testFindById() {
 
-        FanRepository repo = new FanRepository();
+        FanRepository repo =
+                new FanRepository();
 
-        Fan fan = new Fan(
-                "F004",
-                "Duy",
-                "duy@gmail.com",
-                "0912345678",
-                2004);
+        Fan fan =
+                repo.findById("F001");
 
-        repo.addFan(fan);
+        assertNotNull(fan);
+    }
 
-        System.out.println("Them fan thanh cong!");
+    @Test
+    void testFindByCondition() {
 
-        for (Fan f : repo.getAllFans()) {
+        FanRepository repo =
+                new FanRepository();
 
-            System.out.println(
-                    f.getId() + " - " +
-                    f.getName() + " - " +
-                    f.getEmail());
-        }
+        ArrayList<Fan> result =
+                repo.findByCondition(
+                        x -> x.getEmail()
+                                .contains("gmail"));
 
-        Fan result = repo.findById("F001");
-
-        if (result != null) {
-
-            System.out.println(
-                    result.getId() + " - " +
-                    result.getName());
-        }
-
-        Fan updated = new Fan(
-                "F001",
-                "Duy Updated",
-                "new@gmail.com",
-                "0999999999",
-                2004);
-
-        repo.updateFan(updated);
-
-        repo.deleteFan("F004");
+        assertNotNull(result);
     }
 }

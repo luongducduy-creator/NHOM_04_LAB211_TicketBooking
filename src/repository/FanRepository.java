@@ -13,12 +13,14 @@ public class FanRepository {
     // CREATE
     public void addFan(Fan fan) {
 
-        try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
+        try (FileWriter fw =
+                     new FileWriter(FILE_NAME, true)) {
 
             fw.write(fan.toString());
             fw.write("\n");
 
         } catch (Exception e) {
+
             System.out.println("Loi ghi file");
         }
     }
@@ -29,8 +31,8 @@ public class FanRepository {
         ArrayList<Fan> list = new ArrayList<>();
 
         try (BufferedReader br =
-                new BufferedReader(
-                        new FileReader(FILE_NAME))) {
+                     new BufferedReader(
+                             new FileReader(FILE_NAME))) {
 
             String line;
 
@@ -38,20 +40,22 @@ public class FanRepository {
 
                 String[] data = line.split(",");
 
-                if (data.length >= 5) {
-
-                    Fan fan = new Fan(
-                            data[0],
-                            data[1],
-                            data[2],
-                            data[3],
-                            Integer.parseInt(data[4]));
-
-                    list.add(fan);
+                if (data.length < 5) {
+                    continue;
                 }
+
+                Fan fan = new Fan(
+                        data[0],
+                        data[1],
+                        data[2],
+                        data[3],
+                        Integer.parseInt(data[4]));
+
+                list.add(fan);
             }
 
         } catch (Exception e) {
+
             System.out.println("Loi doc file");
         }
 
@@ -76,13 +80,18 @@ public class FanRepository {
 
         ArrayList<Fan> fans = getAllFans();
 
-        try (FileWriter fw = new FileWriter(FILE_NAME)) {
+        try (FileWriter fw =
+                     new FileWriter(FILE_NAME)) {
 
             for (Fan fan : fans) {
 
-                if (fan.getId().equals(newFan.getId())) {
+                if (fan.getId()
+                        .equals(newFan.getId())) {
+
                     fw.write(newFan.toString());
+
                 } else {
+
                     fw.write(fan.toString());
                 }
 
@@ -90,6 +99,7 @@ public class FanRepository {
             }
 
         } catch (Exception e) {
+
             System.out.println("Loi cap nhat fan");
         }
     }
@@ -99,7 +109,8 @@ public class FanRepository {
 
         ArrayList<Fan> fans = getAllFans();
 
-        try (FileWriter fw = new FileWriter(FILE_NAME)) {
+        try (FileWriter fw =
+                     new FileWriter(FILE_NAME)) {
 
             for (Fan fan : fans) {
 
@@ -111,6 +122,7 @@ public class FanRepository {
             }
 
         } catch (Exception e) {
+
             System.out.println("Loi xoa fan");
         }
     }
@@ -119,7 +131,8 @@ public class FanRepository {
     public ArrayList<Fan> findByCondition(
             Predicate<Fan> condition) {
 
-        ArrayList<Fan> result = new ArrayList<>();
+        ArrayList<Fan> result =
+                new ArrayList<>();
 
         for (Fan fan : getAllFans()) {
 
