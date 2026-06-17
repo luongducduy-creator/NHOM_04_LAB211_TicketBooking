@@ -1,4 +1,4 @@
-package ticketbooking.model.seat;
+package TicketBooking.model.seat; 
 
 public class Seat {
      private String seatId;

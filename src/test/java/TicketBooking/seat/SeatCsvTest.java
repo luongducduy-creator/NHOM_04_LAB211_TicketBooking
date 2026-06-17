@@ -1,8 +1,8 @@
-package ticketbooking.test.seat;
+package TicketBooking.seat;
 
-import ticketbooking.model.seat.Seat;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import TicketBooking.model.seat.Seat; // <-- Bắt buộc phải có dòng này để import Seat
+import org.junit.jupiter.api.Test;   // Hoặc org.junit.Test tùy bản JUnit bạn dùng
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SeatCsvTest {
 
