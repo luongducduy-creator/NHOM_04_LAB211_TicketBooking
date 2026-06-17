@@ -7,19 +7,16 @@ import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public class FanRepository {
+
     private final String FILE_NAME = "data/fans.csv";
 
     // CREATE
     public void addFan(Fan fan) {
 
-        try {
-
-            FileWriter fw = new FileWriter(FILE_NAME, true);
+        try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
 
             fw.write(fan.toString());
             fw.write("\n");
-
-            fw.close();
 
         } catch (Exception e) {
 
@@ -32,9 +29,9 @@ public class FanRepository {
 
         ArrayList<Fan> list = new ArrayList<>();
 
-        try {
-            BufferedReader br = new BufferedReader(
-                    new FileReader(FILE_NAME));
+        try (BufferedReader br =
+                     new BufferedReader(
+                             new FileReader(FILE_NAME))) {
 
             String line;
 
@@ -42,15 +39,19 @@ public class FanRepository {
 
                 String[] data = line.split(",");
 
+                if (data.length < 5) {
+                    continue;
+                }
+
                 Fan fan = new Fan(
                         data[0],
                         data[1],
-                        data[2]);
+                        data[2],
+                        data[3],
+                        Integer.parseInt(data[4]));
 
                 list.add(fan);
             }
-
-            br.close();
 
         } catch (Exception e) {
 
@@ -63,9 +64,7 @@ public class FanRepository {
     // READ BY ID
     public Fan findById(String id) {
 
-        ArrayList<Fan> fans = getAllFans();
-
-        for (Fan fan : fans) {
+        for (Fan fan : getAllFans()) {
 
             if (fan.getId().equals(id)) {
 
@@ -81,9 +80,7 @@ public class FanRepository {
 
         ArrayList<Fan> fans = getAllFans();
 
-        try {
-
-            FileWriter fw = new FileWriter(FILE_NAME);
+        try (FileWriter fw = new FileWriter(FILE_NAME)) {
 
             for (Fan fan : fans) {
 
@@ -99,8 +96,6 @@ public class FanRepository {
                 fw.write("\n");
             }
 
-            fw.close();
-
         } catch (Exception e) {
 
             System.out.println("Loi cap nhat fan");
@@ -112,9 +107,7 @@ public class FanRepository {
 
         ArrayList<Fan> fans = getAllFans();
 
-        try {
-
-            FileWriter fw = new FileWriter(FILE_NAME);
+        try (FileWriter fw = new FileWriter(FILE_NAME)) {
 
             for (Fan fan : fans) {
 
@@ -124,8 +117,6 @@ public class FanRepository {
                     fw.write("\n");
                 }
             }
-
-            fw.close();
 
         } catch (Exception e) {
 
@@ -139,9 +130,7 @@ public class FanRepository {
 
         ArrayList<Fan> result = new ArrayList<>();
 
-        ArrayList<Fan> fans = getAllFans();
-
-        for (Fan fan : fans) {
+        for (Fan fan : getAllFans()) {
 
             if (condition.test(fan)) {
 
