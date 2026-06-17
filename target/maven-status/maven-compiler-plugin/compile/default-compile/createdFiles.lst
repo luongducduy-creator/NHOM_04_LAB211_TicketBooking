@@ -3,15 +3,15 @@ ticketbooking\model\transaction\Transaction.class
 ticketbooking\model\match\MatchStatus.class
 repository\FanRepository.class
 ticketbooking\repository\SeatRepository.class
+app\Main.class
 ticketbooking\model\base\BaseEntity.class
-DataGenerator.class
 ticketbooking\model\ticket\Ticket.class
+ticketbooking\model\seat\SeatType.class
 ticketbooking\repository\CsvRepository.class
 ticketbooking\repository\TransactionRepository.class
 ticketbooking\repository\TicketRepository.class
 model\fan\Role.class
 ticketbooking\model\seat\Seat.class
-model\seat\SeatType.class
 ticketbooking\model\match\Match.class
 ticketbooking\model\seat\Section.class
 ticketbooking\model\ticket\TicketStatus.class
