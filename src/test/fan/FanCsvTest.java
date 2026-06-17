@@ -1,9 +1,9 @@
-package TicketBooking.test.fan;
+package test.fan;
 
-import TicketBooking.model.fan.Fan;
-import TicketBooking.repository.FanRepository;
+import model.fan.Fan;
+import repository.FanRepository;
 
-public class FanRepositoryTest {
+public class FanCsvTest {
 
     public static void main(String[] args) {
 
@@ -18,9 +18,7 @@ public class FanRepositoryTest {
 
         repo.addFan(fan);
 
-        System.out.println("Them fan thanh cong!");
-
-        System.out.println("\nDanh sach fan:");
+        System.out.println("Danh sach fan:");
 
         for (Fan f : repo.getAllFans()) {
 
@@ -35,23 +33,8 @@ public class FanRepositoryTest {
         if (result != null) {
 
             System.out.println(
-                    "\nTim thay: " +
+                    "Tim thay: " +
                     result.getName());
         }
-
-        Fan updatedFan = new Fan(
-                "F001",
-                "Duy Updated",
-                "new@gmail.com",
-                "0999999999",
-                2000);
-
-        repo.updateFan(updatedFan);
-
-        System.out.println("\nDa cap nhat F001");
-
-        repo.deleteFan("F004");
-
-        System.out.println("Da xoa F004");
     }
 }
