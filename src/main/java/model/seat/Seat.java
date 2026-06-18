@@ -26,25 +26,17 @@ public class Seat {
         return String.join(",", seatId, sectionId, row, number, status);
     }
 
-    // Getters
-    public String getSeatId() {
-        return seatId;
-    }
+    // Getter
+    public String getSeatId() { return seatId; }
+    public String getSectionId() { return sectionId; }
+    public String getRow() { return row; }
+    public String getNumber() { return number; }
+    public String getStatus() { return status; }
 
-    public String getSectionId() {
-        return sectionId;
-    }
-
-    public String getRow() {
-        return row;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
+    // Setter
+    public void setSeatId(String seatId) { this.seatId = seatId; }
+    public void setSectionId(String sectionId) { this.sectionId = sectionId; }
+    public void setRow(String row) { this.row = row; }
+    public void setNumber(String number) { this.number = number; }
+    public void setStatus(String status) { this.status = status; }
 }
