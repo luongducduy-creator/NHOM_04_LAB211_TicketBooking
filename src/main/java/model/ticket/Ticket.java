@@ -23,6 +23,7 @@ public class Ticket {
         this.status = status;
     }
 
+    // ===== GETTERS =====
     public String getTicketId() {
         return ticketId;
     }
@@ -51,13 +52,18 @@ public class Ticket {
         return status;
     }
 
+    // Cho phép đổi trạng thái
+    public void setStatus(TicketStatus status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return ticketId + "," + matchId + "," + seatId + "," +
                 seatType + "," + price + "," + date + "," + status;
     }
 
-    // ================= FIX CSV PARSER =================
+    // ===== PARSER TỪ CSV =====
     public static Ticket fromCsv(String line) {
         if (line == null || line.isBlank())
             return null;
@@ -76,7 +82,6 @@ public class Ticket {
             String seatType = parts[3].trim();
             double price = Double.parseDouble(parts[4].trim());
             String date = parts[5].trim();
-
             TicketStatus status = parseStatus(parts[6].trim());
 
             if (status == null)
@@ -89,11 +94,9 @@ public class Ticket {
         }
     }
 
-    // ================= SAFE STATUS PARSER =================
     private static TicketStatus parseStatus(String raw) {
         if (raw == null)
             return null;
-
         switch (raw.trim().toUpperCase()) {
             case "SOLD":
                 return TicketStatus.SOLD;
@@ -106,7 +109,6 @@ public class Ticket {
         }
     }
 
-    // (optional nhưng tốt cho test)
     @Override
     public boolean equals(Object o) {
         if (this == o)

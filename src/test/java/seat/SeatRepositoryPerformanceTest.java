@@ -29,4 +29,3 @@ public class SeatRepositoryPerformanceTest {
         assertTrue(duration <= 500, "Performance requirement not met! Duration: " + duration + "ms");
     }
 }
-
