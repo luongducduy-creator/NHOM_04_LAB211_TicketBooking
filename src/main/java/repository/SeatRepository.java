@@ -21,15 +21,21 @@ public class SeatRepository {
     }
 
     public List<Seat> findAll() throws IOException {
-        List<Seat> seats = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                seats.add(Seat.fromCsvLine(line));
-            }
-        }
+    List<Seat> seats = new ArrayList<>();
+
+    File file = new File(filePath);
+    if (!file.exists()) {
         return seats;
     }
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            seats.add(Seat.fromCsvLine(line));
+        }
+    }
+    return seats;
+}
 
     public void addSeat(Seat seat) throws IOException {
         List<Seat> seats = findAll();
