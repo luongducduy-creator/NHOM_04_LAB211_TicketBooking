@@ -59,10 +59,22 @@ public class Fan {
         return id + "," + name + "," + email + "," + phone + "," + birthYear;
     }
 
-    // IMPORTANT: test đang so sánh toString()
+    public static Fan fromCsvLine(String line) {
+        String[] data = line.split("\\s*,\\s*");
+        if (data.length < 5) {
+            return null;
+        }
+        return new Fan(
+                data[0],
+                data[1],
+                data[2],
+                data[3],
+                Integer.parseInt(data[4]));
+    }
+
     @Override
     public String toString() {
-        return id + "," + name + "," + email + "," + phone + "," + birthYear;
+        return toCSV();
     }
 
     @Override

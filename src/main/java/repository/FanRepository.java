@@ -54,17 +54,10 @@ public class FanRepository {
                 if (line.trim().isEmpty())
                     continue; // ✔ FIX dòng rỗng
 
-                String[] data = line.split("\\s*,\\s*");
-
-                if (data.length < 5)
-                    continue;
-
-                list.add(new Fan(
-                        data[0],
-                        data[1],
-                        data[2],
-                        data[3],
-                        Integer.parseInt(data[4])));
+                Fan fan = Fan.fromCsvLine(line);
+                if (fan != null) {
+                    list.add(fan);
+                }
             }
 
         } catch (Exception e) {
