@@ -1,6 +1,9 @@
 package model.ticket;
 
+import java.util.Objects;
+
 public class Ticket {
+
     private String ticketId;
     private String matchId;
     private String seatId;
@@ -9,7 +12,6 @@ public class Ticket {
     private String date;
     private TicketStatus status;
 
-    // Constructor
     public Ticket(String ticketId, String matchId, String seatId, String seatType,
             double price, String date, TicketStatus status) {
         this.ticketId = ticketId;
@@ -21,7 +23,6 @@ public class Ticket {
         this.status = status;
     }
 
-    // Getter
     public String getTicketId() {
         return ticketId;
     }
@@ -50,23 +51,22 @@ public class Ticket {
         return status;
     }
 
-    // Hiển thị lại thành CSV
     @Override
     public String toString() {
-        return ticketId + "," + matchId + "," + seatId + "," + seatType + "," +
-                price + "," + date + "," + status;
+        return ticketId + "," + matchId + "," + seatId + "," +
+                seatType + "," + price + "," + date + "," + status;
     }
 
-    // Parse từ một dòng CSV
+    // ================= FIX CSV PARSER =================
     public static Ticket fromCsv(String line) {
-        if (line == null || line.trim().isEmpty())
+        if (line == null || line.isBlank())
             return null;
 
         String[] parts = line.split(",");
-        // bỏ qua header
-        if (parts[0].equalsIgnoreCase("ticketId"))
-            return null;
         if (parts.length < 7)
+            return null;
+
+        if (parts[0].trim().equalsIgnoreCase("ticketId"))
             return null;
 
         try {
@@ -76,12 +76,49 @@ public class Ticket {
             String seatType = parts[3].trim();
             double price = Double.parseDouble(parts[4].trim());
             String date = parts[5].trim();
-            TicketStatus status = TicketStatus.valueOf(parts[6].trim().toUpperCase());
+
+            TicketStatus status = parseStatus(parts[6].trim());
+
+            if (status == null)
+                return null;
 
             return new Ticket(ticketId, matchId, seatId, seatType, price, date, status);
+
         } catch (Exception e) {
-            // Nếu parse lỗi thì bỏ qua dòng đó
             return null;
         }
+    }
+
+    // ================= SAFE STATUS PARSER =================
+    private static TicketStatus parseStatus(String raw) {
+        if (raw == null)
+            return null;
+
+        switch (raw.trim().toUpperCase()) {
+            case "SOLD":
+                return TicketStatus.SOLD;
+            case "AVAILABLE":
+                return TicketStatus.AVAILABLE;
+            case "CANCELLED":
+                return TicketStatus.CANCELLED;
+            default:
+                return null;
+        }
+    }
+
+    // (optional nhưng tốt cho test)
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Ticket))
+            return false;
+        Ticket ticket = (Ticket) o;
+        return Objects.equals(ticketId, ticket.ticketId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ticketId);
     }
 }

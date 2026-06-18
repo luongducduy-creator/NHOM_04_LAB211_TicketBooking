@@ -5,46 +5,69 @@ import model.ticket.TicketStatus;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TicketRepository {
 
     private final String filePath;
+    private List<Ticket> cache;
 
     public TicketRepository(String filePath) {
         this.filePath = filePath;
     }
 
-    public List<Ticket> findAll() {
-        List<Ticket> tickets = new ArrayList<>();
+    // ===== LOAD ONCE =====
+    private void loadData() {
+        if (cache != null)
+            return;
+
+        cache = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
 
+            String line;
             while ((line = br.readLine()) != null) {
-                // Bỏ qua dòng trống hoặc header nếu có
-                if (line.trim().isEmpty() || line.toLowerCase().startsWith("id,")) {
-                    continue;
-                }
 
                 Ticket ticket = Ticket.fromCsv(line);
 
                 if (ticket != null) {
-                    tickets.add(ticket);
+                    cache.add(ticket);
                 }
             }
 
         } catch (IOException e) {
-            System.err.println("Cannot read file: " + filePath);
             e.printStackTrace();
         }
+    }
 
-        return tickets;
+    public List<Ticket> findAll() {
+        loadData();
+        return cache;
     }
 
     public List<Ticket> findByStatus(TicketStatus status) {
-        return findAll().stream()
-                .filter(ticket -> status.equals(ticket.getStatus())) // dùng equals thay vì ==
-                .collect(Collectors.toList());
+        loadData();
+
+        List<Ticket> result = new ArrayList<>();
+
+        for (Ticket t : cache) {
+            if (t.getStatus() == status) {
+                result.add(t);
+            }
+        }
+
+        return result;
+    }
+
+    public long countByStatus(TicketStatus status) {
+        loadData();
+
+        long count = 0;
+        for (Ticket t : cache) {
+            if (t.getStatus() == status) {
+                count++;
+            }
+        }
+
+        return count;
     }
 }

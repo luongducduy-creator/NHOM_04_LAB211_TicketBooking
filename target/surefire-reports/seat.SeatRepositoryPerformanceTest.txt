@@ -1,8 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: seat.SeatRepositoryPerformanceTest
 -------------------------------------------------------------------------------
-<<<<<<< HEAD
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.081 s -- in seat.SeatRepositoryPerformanceTest
-=======
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.103 s -- in seat.SeatRepositoryPerformanceTest
->>>>>>> 619aa2acf41363235185bf20392864684f50f340
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s -- in seat.SeatRepositoryPerformanceTest

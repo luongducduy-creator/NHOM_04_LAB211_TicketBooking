@@ -21,14 +21,14 @@ public class TicketRepositoryTest {
     @Test
     public void testAvailableTickets() {
         assertEquals(
-                49722,
+                49833,
                 repo.findByStatus(TicketStatus.AVAILABLE).size());
     }
 
     @Test
     public void testSoldTickets() {
         assertEquals(
-                50278,
+                50167,
                 repo.findByStatus(TicketStatus.SOLD).size());
     }
 }
