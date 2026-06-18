@@ -1,7 +1,7 @@
-package ticketbooking.repository;
+package repository;
 
-import ticketbooking.model.ticket.Ticket;
-import ticketbooking.model.ticket.TicketStatus;
+import model.ticket.Ticket;
+import model.ticket.TicketStatus;
 
 import java.io.*;
 import java.util.*;

@@ -54,15 +54,15 @@ public class Fan {
         this.birthYear = birthYear;
     }
 
-    // CSV
+    // CSV format (dùng cho test)
     public String toCSV() {
         return id + "," + name + "," + email + "," + phone + "," + birthYear;
     }
 
-    // debug
+    // IMPORTANT: test đang dùng toString() nên phải giống CSV
     @Override
     public String toString() {
-        return id + " - " + name + " - " + email + " - " + phone + " - " + birthYear;
+        return id + "," + name + "," + email + "," + phone + "," + birthYear;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class Fan {
             return false;
 
         Fan f = (Fan) o;
-        return id.equals(f.id);
+        return Objects.equals(this.id, f.id);
     }
 
     @Override

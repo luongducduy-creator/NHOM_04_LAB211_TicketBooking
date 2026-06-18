@@ -1,7 +1,7 @@
-package TicketBooking.model.seat; 
+package model.seat;
 
 public class Seat {
-     private String seatId;
+    private String seatId;
     private String sectionId;
     private String row;
     private String number;
@@ -27,10 +27,24 @@ public class Seat {
     }
 
     // Getters
-    public String getSeatId() { return seatId; }
-    public String getSectionId() { return sectionId; }
-    public String getRow() { return row; }
-    public String getNumber() { return number; }
-    public String getStatus() { return status; }
+    public String getSeatId() {
+        return seatId;
+    }
+
+    public String getSectionId() {
+        return sectionId;
+    }
+
+    public String getRow() {
+        return row;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 
 }

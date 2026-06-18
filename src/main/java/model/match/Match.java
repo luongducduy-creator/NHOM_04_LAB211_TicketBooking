@@ -1,4 +1,4 @@
-package ticketbooking.model.match;
+package model.match;
 
 public class Match {
 

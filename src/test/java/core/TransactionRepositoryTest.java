@@ -1,4 +1,4 @@
-package ticketbooking.test.core;
+package core;
 
 public class TransactionRepositoryTest {
 

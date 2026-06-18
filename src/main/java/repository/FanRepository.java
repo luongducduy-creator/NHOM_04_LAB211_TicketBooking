@@ -8,11 +8,21 @@ import java.util.function.Predicate;
 
 public class FanRepository {
 
-    private final String FILE_NAME = System.getProperty("user.dir") + "/data/fans.csv";
+    private final String FILE_NAME;
+
+    // dùng cho app thật
+    public FanRepository() {
+        this.FILE_NAME = System.getProperty("user.dir") + "/data/fans.csv";
+    }
+
+    // dùng cho test (file tạm) ✔ FIX QUAN TRỌNG
+    public FanRepository(String fileName) {
+        this.FILE_NAME = fileName;
+    }
 
     public void addFan(Fan fan) {
         try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
-            fw.write(fan.toString());
+            fw.write(fan.toCSV());
             fw.write("\n");
         } catch (Exception e) {
             System.out.println("Loi ghi file");
@@ -70,9 +80,9 @@ public class FanRepository {
             for (Fan f : fans) {
 
                 if (f.getId().equals(newFan.getId())) {
-                    fw.write(newFan.toString());
+                    fw.write(newFan.toCSV());
                 } else {
-                    fw.write(f.toString());
+                    fw.write(f.toCSV());
                 }
 
                 fw.write("\n");
@@ -92,7 +102,7 @@ public class FanRepository {
             for (Fan f : fans) {
 
                 if (!f.getId().equals(id)) {
-                    fw.write(f.toString());
+                    fw.write(f.toCSV());
                     fw.write("\n");
                 }
             }
@@ -107,8 +117,9 @@ public class FanRepository {
         ArrayList<Fan> result = new ArrayList<>();
 
         for (Fan f : getAllFans()) {
-            if (condition.test(f))
+            if (condition.test(f)) {
                 result.add(f);
+            }
         }
 
         return result;

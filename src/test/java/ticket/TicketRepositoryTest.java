@@ -1,7 +1,7 @@
-package ticketbooking.test.ticket;
+package ticket;
 
-import ticketbooking.repository.TicketRepository;
-import ticketbooking.model.ticket.*;
+import repository.TicketRepository;
+import model.ticket.*;
 
 import org.junit.jupiter.api.Test;
 

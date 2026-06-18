@@ -1,4 +1,4 @@
-package ticketbooking.repository;
+package repository;
 
 public class SeatRepository {
 
