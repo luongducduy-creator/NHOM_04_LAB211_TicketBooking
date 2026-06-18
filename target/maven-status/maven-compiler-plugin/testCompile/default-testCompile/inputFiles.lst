@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 D:\github\NHOM_04_LAB211_TicketBooking\src\test\java\core\BaseEntityTest.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\test\java\core\CsvRepositoryTest.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\test\java\core\MatchCsvTest.java
@@ -8,3 +9,15 @@ D:\github\NHOM_04_LAB211_TicketBooking\src\test\java\seat\SeatCsvTest.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\test\java\seat\SeatRepositoryPerformanceTest.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\test\java\ticket\TicketCsvTest.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\test\java\ticket\TicketRepositoryTest.java
+=======
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\core\BaseEntityTest.java
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\core\CsvRepositoryTest.java
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\core\MatchCsvTest.java
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\core\TransactionRepositoryTest.java
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\fan\FanCsvTest.java
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\fan\FanRepositoryTest.java
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\seat\SeatCsvTest.java
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\seat\SeatRepositoryPerformanceTest.java
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\ticket\TicketCsvTest.java
+C:\GitHub\NHOM_04_LAB211_TicketBooking\src\test\java\ticket\TicketRepositoryTest.java
+>>>>>>> 619aa2acf41363235185bf20392864684f50f340

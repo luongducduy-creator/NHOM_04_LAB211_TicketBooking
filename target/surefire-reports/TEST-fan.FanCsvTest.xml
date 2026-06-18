@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="fan.FanCsvTest" time="0.044" tests="2" errors="0" skipped="0" failures="0">
+=======
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="fan.FanCsvTest" time="0.025" tests="2" errors="0" skipped="0" failures="0">
+>>>>>>> 619aa2acf41363235185bf20392864684f50f340
   <properties>
     <property name="sun.desktop" value="windows"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
     <property name="file.encoding.pkg" value="sun.io"/>
     <property name="java.specification.version" value="1.8"/>
     <property name="sun.cpu.isalist" value="amd64"/>
+<<<<<<< HEAD
     <property name="sun.jnu.encoding" value="Cp1252"/>
     <property name="java.class.path" value="D:\github\NHOM_04_LAB211_TicketBooking\target\test-classes;D:\github\NHOM_04_LAB211_TicketBooking\target\classes;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
+=======
+    <property name="sun.jnu.encoding" value="Cp1258"/>
+    <property name="java.class.path" value="C:\GitHub\NHOM_04_LAB211_TicketBooking\target\test-classes;C:\GitHub\NHOM_04_LAB211_TicketBooking\target\classes;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\lx538\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\lx538\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\lx538\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\lx538\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
+>>>>>>> 619aa2acf41363235185bf20392864684f50f340
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
@@ -18,6 +27,7 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_202\jre\bin"/>
+<<<<<<< HEAD
     <property name="sun.java.command" value="C:\Users\FPTSHOP\AppData\Local\Temp\surefire7731079446967322660\surefirebooter-20260618232215859_3.jar C:\Users\FPTSHOP\AppData\Local\Temp\surefire7731079446967322660 2026-06-18T23-22-15_558-jvmRun1 surefire-20260618232215859_1tmp surefire_0-20260618232215859_2tmp"/>
     <property name="surefire.test.class.path" value="D:\github\NHOM_04_LAB211_TicketBooking\target\test-classes;D:\github\NHOM_04_LAB211_TicketBooking\target\classes;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -26,21 +36,40 @@
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="java.home" value="C:\Program Files\Java\jdk1.8.0_202\jre"/>
     <property name="basedir" value="D:\github\NHOM_04_LAB211_TicketBooking"/>
+=======
+    <property name="sun.java.command" value="C:\Users\lx538\AppData\Local\Temp\surefire3067571055896614402\surefirebooter-20260618113324996_3.jar C:\Users\lx538\AppData\Local\Temp\surefire3067571055896614402 2026-06-18T11-33-23_987-jvmRun1 surefire-20260618113324996_1tmp surefire_0-20260618113324996_2tmp"/>
+    <property name="surefire.test.class.path" value="C:\GitHub\NHOM_04_LAB211_TicketBooking\target\test-classes;C:\GitHub\NHOM_04_LAB211_TicketBooking\target\classes;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\lx538\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\lx538\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\lx538\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\lx538\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\lx538"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk1.8.0_202\jre"/>
+    <property name="basedir" value="C:\GitHub\NHOM_04_LAB211_TicketBooking"/>
+>>>>>>> 619aa2acf41363235185bf20392864684f50f340
     <property name="file.separator" value="\"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
+<<<<<<< HEAD
     <property name="surefire.real.class.path" value="C:\Users\FPTSHOP\AppData\Local\Temp\surefire7731079446967322660\surefirebooter-20260618232215859_3.jar"/>
+=======
+    <property name="surefire.real.class.path" value="C:\Users\lx538\AppData\Local\Temp\surefire3067571055896614402\surefirebooter-20260618113324996_3.jar"/>
+>>>>>>> 619aa2acf41363235185bf20392864684f50f340
     <property name="sun.boot.class.path" value="C:\Program Files\Java\jdk1.8.0_202\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_202\jre\classes"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="1.8.0_202-b08"/>
+<<<<<<< HEAD
     <property name="user.name" value="FPTSHOP"/>
+=======
+    <property name="user.name" value="LongCa"/>
+>>>>>>> 619aa2acf41363235185bf20392864684f50f340
     <property name="path.separator" value=";"/>
     <property name="os.version" value="10.0"/>
     <property name="java.endorsed.dirs" value="C:\Program Files\Java\jdk1.8.0_202\jre\lib\endorsed"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+<<<<<<< HEAD
     <property name="file.encoding" value="Cp1252"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
     <property name="localRepository" value="C:\Users\FPTSHOP\.m2\repository"/>
@@ -48,10 +77,20 @@
     <property name="java.io.tmpdir" value="C:\Users\FPTSHOP\AppData\Local\Temp\"/>
     <property name="java.version" value="1.8.0_202"/>
     <property name="user.dir" value="D:\github\NHOM_04_LAB211_TicketBooking"/>
+=======
+    <property name="file.encoding" value="Cp1258"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="localRepository" value="C:\Users\lx538\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="C:\Users\lx538\AppData\Local\Temp\"/>
+    <property name="java.version" value="1.8.0_202"/>
+    <property name="user.dir" value="C:\GitHub\NHOM_04_LAB211_TicketBooking"/>
+>>>>>>> 619aa2acf41363235185bf20392864684f50f340
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
     <property name="sun.os.patch.level" value=""/>
+<<<<<<< HEAD
     <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_202\jre\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Users/FPTSHOP/.gemini/antigravity-ide/bin;C:\Program Files\Google\Chrome\Application;C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot\bin;D:\ufc4\Bin;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32\bin;C:\MinGW\bin;C:\Program Files\dotnet\;C:\Program Files\Java\jdk1.8.0_202\bin;C:\Program Files\PuTTY\;C:\Program Files\nodejs\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\170\DTS\Binn\;C:\Users\FPTSHOP\AppData\Local\Microsoft\WindowsApps;C:\Users\FPTSHOP\AppData\Local\Muse Hub\lib;C:\Users\FPTSHOP\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\FPTSHOP\AppData\Roaming\npm;C:\Users\FPTSHOP\.dotnet\tools;C:\Users\FPTSHOP\AppData\Local\Programs\Antigravity\bin;C:\ProgramData\FPTSHOP\GitHubDesktop\bin;C:\Users\FPTSHOP\AppData\Local\GitHubDesktop\bin;D:\Maven\apache-maven-3.9.11\apache-maven-3.9.16\bin;;."/>
     <property name="java.vm.info" value="mixed mode"/>
     <property name="java.vendor" value="Oracle Corporation"/>
@@ -61,5 +100,16 @@
     <property name="java.class.version" value="52.0"/>
   </properties>
   <testcase name="testParseFromCsv" classname="fan.FanCsvTest" time="0.021"/>
+=======
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_202\jre\bin;C:\windows\Sun\Java\bin;C:\windows\system32;C:\windows;c:\Users\lx538\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\debugCommand;c:\Users\lx538\AppData\Roaming\Code\User\globalStorage\github.copilot-chat\copilotCli;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\Java\jdk1.8.0_202\bin;C:\Program Files\PuTTY\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files (x86)\Microsoft SQL Server\160\DTS\Binn\;C:\Program Files\Azure Data Studio\bin;C:\Users\lx538\Downloads\apache-maven-3.9.16-bin\apache-maven-3.9.16\bin;C:\Program Files\Java\jdk1.8.0_202\bin;C:\Users\lx538\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\lx538\AppData\Local\Programs\Python\Python313\;C:\Users\lx538\AppData\Local\Microsoft\WindowsApps;C:\Users\lx538\AppData\Roaming\npm;C:\Program Files\Azure Data Studio\bin;C:\Users\lx538\AppData\Local\GitHubDesktop\bin;C:\Users\lx538\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\lx538\AppData\Local\Programs\Antigravity IDE\bin;c:\Users\lx538\.vscode\extensions\vscjava.vscode-java-debug-0.59.0\bundled\scripts\noConfigScripts;."/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.version" value="25.202-b08"/>
+    <property name="java.ext.dirs" value="C:\Program Files\Java\jdk1.8.0_202\jre\lib\ext;C:\windows\Sun\Java\lib\ext"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="52.0"/>
+  </properties>
+  <testcase name="testParseFromCsv" classname="fan.FanCsvTest" time="0.012"/>
+>>>>>>> 619aa2acf41363235185bf20392864684f50f340
   <testcase name="testSerializeToCsv" classname="fan.FanCsvTest" time="0.0"/>
 </testsuite>
