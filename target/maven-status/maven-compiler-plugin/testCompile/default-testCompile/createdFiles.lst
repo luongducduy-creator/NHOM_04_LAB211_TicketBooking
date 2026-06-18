@@ -7,3 +7,4 @@ fan\FanCsvTest.class
 core\MatchCsvTest.class
 ticket\TicketCsvTest.class
 seat\SeatCsvTest.class
+seat\SeatRepositoryPerformanceTest.class
