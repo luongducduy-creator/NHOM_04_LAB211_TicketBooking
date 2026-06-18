@@ -10,12 +10,12 @@ public class FanRepository {
 
     private final String FILE_NAME;
 
-    // dùng cho app thật
+    // APP thật
     public FanRepository() {
         this.FILE_NAME = System.getProperty("user.dir") + "/data/fans.csv";
     }
 
-    // dùng cho test (file tạm) ✔ FIX QUAN TRỌNG
+    // TEST file tạm
     public FanRepository(String fileName) {
         this.FILE_NAME = fileName;
     }
@@ -23,7 +23,7 @@ public class FanRepository {
     public void addFan(Fan fan) {
         try (FileWriter fw = new FileWriter(FILE_NAME, true)) {
             fw.write(fan.toCSV());
-            fw.write("\n");
+            fw.write(System.lineSeparator());
         } catch (Exception e) {
             System.out.println("Loi ghi file");
         }
@@ -34,14 +34,25 @@ public class FanRepository {
         ArrayList<Fan> list = new ArrayList<>();
 
         File file = new File(FILE_NAME);
-        if (!file.exists())
-            return list;
+
+        // ✔ FIX: nếu file chưa có thì tạo luôn
+        try {
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            System.out.println("Loi tao file");
+        }
 
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
 
             String line;
 
             while ((line = br.readLine()) != null) {
+
+                if (line.trim().isEmpty())
+                    continue; // ✔ FIX dòng rỗng
 
                 String[] data = line.split("\\s*,\\s*");
 
@@ -79,13 +90,12 @@ public class FanRepository {
 
             for (Fan f : fans) {
 
-                if (f.getId().equals(newFan.getId())) {
-                    fw.write(newFan.toCSV());
-                } else {
-                    fw.write(f.toCSV());
-                }
+                fw.write(
+                        f.getId().equals(newFan.getId())
+                                ? newFan.toCSV()
+                                : f.toCSV());
 
-                fw.write("\n");
+                fw.write(System.lineSeparator());
             }
 
         } catch (Exception e) {
@@ -103,7 +113,7 @@ public class FanRepository {
 
                 if (!f.getId().equals(id)) {
                     fw.write(f.toCSV());
-                    fw.write("\n");
+                    fw.write(System.lineSeparator());
                 }
             }
 
