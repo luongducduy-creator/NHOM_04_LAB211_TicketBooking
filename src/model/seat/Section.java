@@ -1,4 +1,4 @@
-package TicketBooking.model.seat;
+package model.seat;
 
 public class Section {
     
