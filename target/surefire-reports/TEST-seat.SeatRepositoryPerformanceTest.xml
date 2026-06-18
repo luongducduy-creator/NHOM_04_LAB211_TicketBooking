@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="seat.SeatRepositoryPerformanceTest" time="0.064" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="seat.SeatRepositoryPerformanceTest" time="0.103" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="sun.desktop" value="windows"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
@@ -18,7 +18,7 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_202\jre\bin"/>
-    <property name="sun.java.command" value="C:\Users\lx538\AppData\Local\Temp\surefire4200190831841218271\surefirebooter-20260618113604722_3.jar C:\Users\lx538\AppData\Local\Temp\surefire4200190831841218271 2026-06-18T11-36-04_471-jvmRun1 surefire-20260618113604722_1tmp surefire_0-20260618113604722_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\lx538\AppData\Local\Temp\surefire4616893513816113775\surefirebooter-20260618224647546_3.jar C:\Users\lx538\AppData\Local\Temp\surefire4616893513816113775 2026-06-18T22-46-47_162-jvmRun1 surefire-20260618224647546_1tmp surefire_0-20260618224647546_2tmp"/>
     <property name="test" value="SeatRepositoryPerformanceTest"/>
     <property name="surefire.test.class.path" value="C:\GitHub\NHOM_04_LAB211_TicketBooking\target\test-classes;C:\GitHub\NHOM_04_LAB211_TicketBooking\target\classes;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\lx538\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\lx538\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\lx538\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\lx538\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\lx538\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -32,7 +32,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
-    <property name="surefire.real.class.path" value="C:\Users\lx538\AppData\Local\Temp\surefire4200190831841218271\surefirebooter-20260618113604722_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\lx538\AppData\Local\Temp\surefire4616893513816113775\surefirebooter-20260618224647546_3.jar"/>
     <property name="sun.boot.class.path" value="C:\Program Files\Java\jdk1.8.0_202\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_202\jre\classes"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
@@ -61,5 +61,5 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="52.0"/>
   </properties>
-  <testcase name="testPerformanceWithLargeData" classname="seat.SeatRepositoryPerformanceTest" time="0.052"/>
+  <testcase name="testPerformanceWithLargeData" classname="seat.SeatRepositoryPerformanceTest" time="0.074"/>
 </testsuite>
