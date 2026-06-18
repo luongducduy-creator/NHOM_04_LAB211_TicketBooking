@@ -9,6 +9,7 @@ public class Ticket {
     private String date;
     private TicketStatus status;
 
+    // Constructor
     public Ticket(String ticketId, String matchId, String seatId, String seatType,
             double price, String date, TicketStatus status) {
         this.ticketId = ticketId;
@@ -20,6 +21,7 @@ public class Ticket {
         this.status = status;
     }
 
+    // Getter
     public String getTicketId() {
         return ticketId;
     }
@@ -48,28 +50,38 @@ public class Ticket {
         return status;
     }
 
+    // Hiển thị lại thành CSV
     @Override
     public String toString() {
         return ticketId + "," + matchId + "," + seatId + "," + seatType + "," +
                 price + "," + date + "," + status;
     }
 
+    // Parse từ một dòng CSV
     public static Ticket fromCsv(String line) {
-        String[] parts = line.split(",");
-        if (parts[0].equalsIgnoreCase("ticketId")) {
+        if (line == null || line.trim().isEmpty())
             return null;
-        }
+
+        String[] parts = line.split(",");
+        // bỏ qua header
+        if (parts[0].equalsIgnoreCase("ticketId"))
+            return null;
+        if (parts.length < 7)
+            return null;
+
         try {
-            String ticketId = parts[0];
-            String matchId = parts[1];
-            String seatId = parts[2];
-            String seatType = parts[3];
-            double price = Double.parseDouble(parts[4]);
-            String date = parts[5];
-            TicketStatus status = TicketStatus.valueOf(parts[6].toUpperCase());
+            String ticketId = parts[0].trim();
+            String matchId = parts[1].trim();
+            String seatId = parts[2].trim();
+            String seatType = parts[3].trim();
+            double price = Double.parseDouble(parts[4].trim());
+            String date = parts[5].trim();
+            TicketStatus status = TicketStatus.valueOf(parts[6].trim().toUpperCase());
+
             return new Ticket(ticketId, matchId, seatId, seatType, price, date, status);
         } catch (Exception e) {
-            return null; // ignore invalid lines silently
+            // Nếu parse lỗi thì bỏ qua dòng đó
+            return null;
         }
     }
 }

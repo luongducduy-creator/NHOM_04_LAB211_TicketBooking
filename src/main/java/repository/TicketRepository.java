@@ -19,10 +19,14 @@ public class TicketRepository {
         List<Ticket> tickets = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-
             String line;
 
             while ((line = br.readLine()) != null) {
+                // Bỏ qua dòng trống hoặc header nếu có
+                if (line.trim().isEmpty() || line.toLowerCase().startsWith("id,")) {
+                    continue;
+                }
+
                 Ticket ticket = Ticket.fromCsv(line);
 
                 if (ticket != null) {
@@ -40,7 +44,7 @@ public class TicketRepository {
 
     public List<Ticket> findByStatus(TicketStatus status) {
         return findAll().stream()
-                .filter(ticket -> ticket.getStatus() == status)
+                .filter(ticket -> status.equals(ticket.getStatus())) // dùng equals thay vì ==
                 .collect(Collectors.toList());
     }
 }
