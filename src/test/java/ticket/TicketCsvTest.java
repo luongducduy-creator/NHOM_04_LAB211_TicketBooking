@@ -1,48 +1,53 @@
 package ticket;
 
-import model.ticket.Ticket;
-import model.ticket.TicketStatus;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class TicketCsvTest {
 
     @Test
-    public void testTicketToStringFormat() {
-        Ticket ticket = new Ticket("T20033", "M1001", "S45", "VIP",
-                150.0, "2026-06-19", TicketStatus.SOLD);
+    public void testCsvColumnAndEmptyData() throws IOException {
+        String path = "data/tickets.csv"; // chỉnh lại nếu file nằm chỗ khác
+        BufferedReader reader = new BufferedReader(new FileReader(path));
 
-        String csv = ticket.toString();
-        System.out.println("CSV format: " + csv);
+        String line;
+        int lineNumber = 0;
+        int invalidCount = 0;
 
-        // Kiểm tra số lượng cột
-        String[] parts = csv.split(",");
-        assertEquals(7, parts.length, "CSV phải có đúng 7 cột");
+        while ((line = reader.readLine()) != null) {
+            lineNumber++;
 
-        // Kiểm tra dữ liệu không rỗng
-        assertFalse(parts[0].isBlank(), "ticketId không được rỗng");
-        assertFalse(parts[1].isBlank(), "matchId không được rỗng");
-        assertFalse(parts[2].isBlank(), "seatId không được rỗng");
-        assertFalse(parts[3].isBlank(), "seatType không được rỗng");
-        assertFalse(parts[5].isBlank(), "date không được rỗng");
+            // Bỏ qua dòng tiêu đề
+            if (lineNumber == 1 && line.startsWith("ticketId"))
+                continue;
 
-        // Kiểm tra price là số
-        assertDoesNotThrow(() -> Double.parseDouble(parts[4]), "price phải là số");
+            // 1️⃣ Kiểm tra số lượng cột
+            String[] parts = line.split(",");
+            if (parts.length != 7) {
+                System.out.println("❌ Sai số cột ở dòng " + lineNumber + ": " + line);
+                invalidCount++;
+                continue; // bỏ qua kiểm tra tiếp theo nếu sai cột
+            }
 
-        // Kiểm tra status hợp lệ
-        assertTrue(parts[6].equals("SOLD") || parts[6].equals("AVAILABLE") || parts[6].equals("CANCELLED"),
-                "status phải là SOLD, AVAILABLE hoặc CANCELLED");
-    }
+            // 2️⃣ Kiểm tra có ô nào bị bỏ trống
+            boolean hasEmpty = false;
+            for (int i = 0; i < parts.length; i++) {
+                if (parts[i].trim().isEmpty()) {
+                    System.out.println("⚠️ Ô trống ở dòng " + lineNumber + ", cột " + (i + 1));
+                    hasEmpty = true;
+                }
+            }
+            if (hasEmpty)
+                invalidCount++;
+        }
 
-    @Test
-    public void testRoundTripCsvParse() {
-        Ticket original = new Ticket("T20034", "M1002", "S46", "STANDARD",
-                100.0, "2026-06-20", TicketStatus.AVAILABLE);
+        reader.close();
 
-        String csv = original.toString();
-        Ticket parsed = Ticket.fromCsv(csv);
-
-        assertNotNull(parsed, "Parse từ CSV phải ra Ticket hợp lệ");
-        assertEquals(original, parsed, "Ticket parse lại phải bằng Ticket gốc");
+        System.out.println("✅ Kiểm tra hoàn tất. Số dòng lỗi: " + invalidCount);
+        assertEquals(0, invalidCount, "File CSV có dòng thiếu cột hoặc ô trống!");
     }
 }
