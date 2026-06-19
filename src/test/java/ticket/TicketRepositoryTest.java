@@ -99,10 +99,10 @@ public class TicketRepositoryTest {
         System.out.println("=== TEST SEARCH COMBINED CONDITIONS ===");
 
         // 🧠 Bạn tự chọn giá trị muốn test
-        String matchIdToSearch = "M17"; // mã trận
+        String matchIdToSearch = "M7"; // mã trận
         String typeToSearch = "NORMAL"; // loại ghế
         double maxPrice = 300000; // giá tối đa
-        String dateToSearch = "2026-07-06"; // ngày diễn ra
+        String dateToSearch = "2026-07-04"; // ngày diễn ra
         TicketStatus statusToSearch = TicketStatus.SOLD; // trạng thái vé
 
         // Gọi hàm tìm kiếm
@@ -132,4 +132,44 @@ public class TicketRepositoryTest {
         }
     }
 
+    // 🧩 Test thêm vé mới
+    @Test
+    public void testAddTicket() {
+        System.out.println("=== TEST ADD TICKET ===");
+
+        // Tạo vé mới
+        Ticket newTicket = new Ticket(
+                "T9999", "M20", "S100", "VIP",
+                500000, "2026-07-10", TicketStatus.AVAILABLE);
+
+        // Thêm vé vào repository
+        repo.addTicket(newTicket);
+
+        // Kiểm tra xem vé có tồn tại sau khi thêm
+        Ticket found = repo.findById("T9999");
+        assertNotNull(found, "Vé mới phải được thêm vào repository");
+        assertEquals("VIP", found.getSeatType());
+        assertEquals(500000, found.getPrice());
+        assertEquals(TicketStatus.AVAILABLE, found.getStatus());
+
+        System.out.println("✅ Vé mới đã được thêm thành công!");
+        repo.printTicketInfo(found);
+    }
+
+    // 🧩 Test xóa vé
+    @Test
+    public void testRemoveTicket() {
+        System.out.println("=== TEST REMOVE TICKET ===");
+
+        String ticketIdToRemove = "T9999"; // ID vé vừa thêm ở test trên
+
+        boolean removed = repo.removeTicket(ticketIdToRemove);
+
+        assertTrue(removed, "Vé phải được xóa thành công");
+
+        Ticket found = repo.findById(ticketIdToRemove);
+        assertNull(found, "Sau khi xóa, vé không được tồn tại trong repository");
+
+        System.out.println("✅ Vé " + ticketIdToRemove + " đã được xóa thành công!");
+    }
 }
