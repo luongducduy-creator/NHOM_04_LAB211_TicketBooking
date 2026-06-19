@@ -25,6 +25,7 @@ public class SeatCsvTest {
         String csvLine = seat.toCsvLine();
 
         assertEquals("SEAT002,SEC2,B,15,AVAILABLE", csvLine);
+        System.out.println("PASS testParseCsvLine");
     }
 
     @Test
@@ -34,6 +35,6 @@ public class SeatCsvTest {
         String serialized = seat.toCsvLine();
 
         assertEquals(originalCsv, serialized);
-        
+        System.out.println("PASS testParseCsvLine");
     }
 }
