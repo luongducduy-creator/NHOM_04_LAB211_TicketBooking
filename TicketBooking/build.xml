@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TicketBooking" default="default" basedir=".">
+    <description>Builds, tests, and runs the project TicketBooking.</description>
+    <import file="nbproject/build-impl.xml"/>
+
+    <!-- Copy thư mục data sau khi compile -->
+    <target name="-post-compile">
+        <copy todir="${build.classes.dir}/data">
+            <fileset dir="data"/>
+        </copy>
+    </target>
+
+    <!-- Copy thư mục data vào JAR khi đóng gói -->
+    <target name="-post-jar">
+        <copy todir="${dist.dir}/data">
+            <fileset dir="data"/>
+        </copy>
+    </target>
+</project>
