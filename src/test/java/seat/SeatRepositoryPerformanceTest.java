@@ -27,6 +27,5 @@ public class SeatRepositoryPerformanceTest {
 
         assertEquals(10000, loaded.size());
         assertTrue(duration <= 500, "Performance requirement not met! Duration: " + duration + "ms");
-        System.out.println("PASS testPerformanceWithLargeData");
     }
 }
