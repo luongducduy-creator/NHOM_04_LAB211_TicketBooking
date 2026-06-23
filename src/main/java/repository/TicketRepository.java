@@ -8,19 +8,16 @@ import java.util.*;
 
 public class TicketRepository {
 
-    // Đường dẫn tới file CSV
     private String filePath;
-    // Danh sách tất cả vé đã đọc từ file
     private List<Ticket> tickets;
 
-    // Khi tạo repository, đọc dữ liệu từ file luôn
     public TicketRepository(String filePath) {
         this.filePath = filePath;
         this.tickets = new ArrayList<>();
         loadData();
     }
 
-    // Đọc dữ liệu từ file CSV và đưa vào danh sách tickets
+    // Đọc dữ liệu từ file CSV
     private void loadData() {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -35,18 +32,24 @@ public class TicketRepository {
         }
     }
 
-    // Đếm số vé theo trạng thái (ví dụ: SOLD, AVAILABLE)
-    public long countByStatus(TicketStatus status) {
-        long count = 0;
-        for (Ticket t : tickets) {
-            if (t.getStatus() == status) {
-                count++;
+    // Ghi lại toàn bộ danh sách vé xuống file CSV
+    private void saveData() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            for (Ticket t : tickets) {
+                bw.write(t.toCsv()); // Ticket cần có hàm toCsv()
+                bw.newLine();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return count;
     }
 
-    // Tìm vé theo ID (cách cũ, vẫn giữ lại)
+    // Đếm số vé theo trạng thái
+    public long countByStatus(TicketStatus status) {
+        return tickets.stream().filter(t -> t.getStatus() == status).count();
+    }
+
+    // Tìm vé theo ID
     public Ticket findById(String ticketId) {
         for (Ticket t : tickets) {
             if (t.getTicketId().equals(ticketId)) {
@@ -56,7 +59,7 @@ public class TicketRepository {
         return null;
     }
 
-    // 🔥 Hàm tìm kiếm linh hoạt: có thể kết hợp nhiều điều kiện
+    // Tìm kiếm linh hoạt
     public List<Ticket> searchTickets(
             String ticketId,
             String matchId,
@@ -69,7 +72,6 @@ public class TicketRepository {
         for (Ticket t : tickets) {
             boolean match = true;
 
-            // Kiểm tra từng điều kiện, nếu có truyền vào thì áp dụng
             if (ticketId != null && !t.getTicketId().equals(ticketId))
                 match = false;
             if (matchId != null && !t.getMatchId().equals(matchId))
@@ -83,14 +85,13 @@ public class TicketRepository {
             if (status != null && t.getStatus() != status)
                 match = false;
 
-            // Nếu vé thỏa mãn tất cả điều kiện thì thêm vào kết quả
             if (match)
                 result.add(t);
         }
         return result;
     }
 
-    // In thông tin vé (có thể dùng cho kết quả searchTickets)
+    // In thông tin vé
     public void printTicketInfo(Ticket ticket) {
         if (ticket != null) {
             System.out.println("ID: " + ticket.getTicketId());
@@ -103,5 +104,28 @@ public class TicketRepository {
         } else {
             System.out.println("Không tìm thấy vé!");
         }
+    }
+
+    // ✅ Thêm vé mới
+    public void addTicket(Ticket newTicket) {
+        tickets.add(newTicket);
+        saveData(); // cập nhật file CSV
+    }
+
+    // ✅ Xóa vé theo ID
+    public boolean removeTicket(String ticketId) {
+        Iterator<Ticket> iterator = tickets.iterator();
+        boolean removed = false;
+        while (iterator.hasNext()) {
+            Ticket t = iterator.next();
+            if (t.getTicketId().equals(ticketId)) {
+                iterator.remove();
+                removed = true;
+            }
+        }
+        if (removed) {
+            saveData(); // cập nhật file CSV
+        }
+        return removed;
     }
 }

@@ -23,6 +23,16 @@ public class Ticket {
         this.status = status;
     }
 
+    public String toCsv() {
+        return ticketId + "," +
+                matchId + "," +
+                seatId + "," +
+                seatType + "," +
+                price + "," +
+                date + "," +
+                status;
+    }
+
     // ===== GETTERS =====
     public String getTicketId() {
         return ticketId;
