@@ -96,4 +96,15 @@ public class FanRepositoryTest {
                 assertEquals("F001", result.get(0).getId());
                 assertEquals("F003", result.get(1).getId());
         }
+
+        @Test
+        void testFindCondition() {
+                repo.addFan(new Fan("F001", "A", "a@gmail.com", "1", 2000));
+                repo.addFan(new Fan("F002", "B", "b@yahoo.com", "2", 2001));
+                repo.addFan(new Fan("F003", "C", "c@gmail.com", "3", 2002));
+
+                ArrayList<Fan> result = repo.findByCondition(f -> f.getEmail().contains("khoa@gmail"));
+
+                assertEquals(0, result.size());
+        }
 }
