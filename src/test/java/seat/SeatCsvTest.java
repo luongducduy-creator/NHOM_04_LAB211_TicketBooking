@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SeatCsvTest {
 
-    @Test
+   @Test
     public void testParseCsvLine() {
         String csvLine = "SEAT001,SEC1,A,01,AVAILABLE";
         Seat seat = Seat.fromCsvLine(csvLine);
