@@ -1,63 +1,34 @@
 package app;
 
+import controller.BookingController;
+import controller.FanController;
+import controller.StadiumController;
+import view.MainView;
+
 import java.util.Scanner;
 
+/**
+ * Application entry point.
+ * MVC wiring:
+ *   Repositories ← Controllers ← Views ← MainView
+ */
 public class Main {
 
     public static void main(String[] args) {
 
+        // ── Shared scanner (one instance for whole app) ──
         Scanner sc = new Scanner(System.in);
-        int choice = -1;
 
-        do {
-            System.out.println("\n===== FOOTBALL TICKET MANAGEMENT SYSTEM =====");
-            System.out.println("1. Fan Management");
-            System.out.println("2. Seat Management");
-            System.out.println("3. Ticket Management");
-            System.out.println("4. Match Management");
-            System.out.println("5. Transaction Management");
-            System.out.println("0. Exit");
-            System.out.print("Choose: ");
+        // ── Controller layer ──
+        FanController     fanCtrl     = new FanController();
+        StadiumController stadiumCtrl = new StadiumController();
+        BookingController bookingCtrl = new BookingController(stadiumCtrl);
 
-            try {
-                choice = Integer.parseInt(sc.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please enter a number.");
-                continue;
-            }
+        // ── View layer (MVC entry point) ──
+        MainView mainView = new MainView(fanCtrl, stadiumCtrl, bookingCtrl, sc);
 
-            switch (choice) {
-
-                case 1:
-                    System.out.println("Fan Management");
-                    break;
-
-                case 2:
-                    System.out.println("Seat Management");
-                    break;
-
-                case 3:
-                    System.out.println("Ticket Management");
-                    break;
-
-                case 4:
-                    System.out.println("Match Management");
-                    break;
-
-                case 5:
-                    System.out.println("Transaction Management");
-                    break;
-
-                case 0:
-                    System.out.println("Goodbye!");
-                    break;
-
-                default:
-                    System.out.println("Invalid choice!");
-                    break;
-            }
-
-        } while (choice != 0);
+        // ── Start application ──
+        mainView.start();
 
         sc.close();
     }

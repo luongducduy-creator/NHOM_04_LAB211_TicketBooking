@@ -1,5 +1,164 @@
 package controller;
 
+import model.match.Match;
+import model.seat.Seat;
+import model.seat.Section;
+import model.ticket.Ticket;
+import model.ticket.TicketStatus;
+import model.transaction.Transaction;
+import repository.TicketRepository;
+import repository.TransactionRepository;
+
+import java.util.List;
+
+/**
+ * T5 – BookingController  (NO_LOCK strategy – single-thread)
+ * Handles: bookSeat, cancelBooking, getMyTransactions
+ */
 public class BookingController {
 
+    private final TicketRepository      ticketRepo;
+    private final TransactionRepository transactionRepo;
+    private final StadiumController     stadiumCtrl;
+
+    public BookingController(StadiumController stadiumCtrl) {
+        this.ticketRepo      = new TicketRepository(System.getProperty("user.dir") + "/data/tickets.csv");
+        this.transactionRepo = new TransactionRepository();
+        this.stadiumCtrl     = stadiumCtrl;
+    }
+
+    // ─────────────────────────────────────────────
+    //  BOOK A SEAT  (NO_LOCK baseline)
+    // ─────────────────────────────────────────────
+    /**
+     * Book a seat for a match.
+     * Steps:
+     *   1. Verify seat exists and is AVAILABLE
+     *   2. Mark seat as BOOKED
+     *   3. Determine ticket type and price from section
+     *   4. Create Ticket (SOLD) and persist
+     *   5. Create Transaction and persist
+     *
+     * @return the created Transaction, or null on failure
+     */
+    public Transaction bookSeat(String fanId, String matchId, String seatId,
+                                Transaction.PaymentMethod paymentMethod) {
+
+        // 1. Get seat
+        Seat seat = stadiumCtrl.getSeatById(seatId);
+        if (seat == null) {
+            System.out.println("[ERROR] Seat not found: " + seatId);
+            return null;
+        }
+        if (!"AVAILABLE".equalsIgnoreCase(seat.getStatus())) {
+            System.out.println("[ERROR] Seat " + seatId + " is not available.");
+            return null;
+        }
+
+        // 2. Get match
+        Match match = stadiumCtrl.getMatchById(matchId);
+        if (match == null) {
+            System.out.println("[ERROR] Match not found: " + matchId);
+            return null;
+        }
+
+        // 3. Determine section and price
+        Section section = stadiumCtrl.getSectionById(seat.getSectionId());
+        String seatType = (section != null) ? section.getType().name() : "NORMAL";
+        double price = seatType.equalsIgnoreCase("VIP") ? 800_000.0 : 300_000.0;
+
+        // 4. Mark seat as BOOKED (NO_LOCK – single-thread safe)
+        boolean marked = stadiumCtrl.markSeatBooked(seatId);
+        if (!marked) {
+            System.out.println("[ERROR] Seat is no longer available (concurrency issue).");
+            return null;
+        }
+
+        // 5. Create and persist Ticket
+        String ticketId = generateNextTicketId();
+        Ticket ticket   = new Ticket(ticketId, matchId, seatId, seatType, price, match.getDate(), TicketStatus.SOLD);
+        ticketRepo.addTicket(ticket);
+
+        // 6. Create and persist Transaction
+        String transId        = transactionRepo.generateNextId();
+        Transaction transaction = new Transaction(transId, ticketId, fanId, price, paymentMethod,
+                Transaction.Status.SUCCESS);
+        transactionRepo.add(transaction);
+
+        System.out.println("[OK] Booking successful! Ticket ID: " + ticketId + "  |  Transaction: " + transId);
+        return transaction;
+    }
+
+    // ─────────────────────────────────────────────
+    //  CANCEL BOOKING
+    // ─────────────────────────────────────────────
+    /**
+     * Cancel a booking identified by transactionId.
+     * Only the fan who owns the transaction can cancel it.
+     */
+    public boolean cancelBooking(String transactionId, String fanId) {
+        List<Transaction> all = transactionRepo.findAll();
+        Transaction target = null;
+        for (Transaction t : all) {
+            if (t.getTransactionId().equalsIgnoreCase(transactionId)) {
+                target = t;
+                break;
+            }
+        }
+        if (target == null) {
+            System.out.println("[ERROR] Transaction not found: " + transactionId);
+            return false;
+        }
+        if (!target.getFanId().equalsIgnoreCase(fanId)) {
+            System.out.println("[ERROR] You can only cancel your own bookings.");
+            return false;
+        }
+        if (target.getStatus() == Transaction.Status.CANCELLED) {
+            System.out.println("[ERROR] This booking is already cancelled.");
+            return false;
+        }
+
+        // Mark ticket as CANCELLED
+        Ticket ticket = ticketRepo.findById(target.getTicketId());
+        if (ticket != null) {
+            ticket.setStatus(TicketStatus.CANCELLED);
+            // TicketRepository rewrites the whole file on next access – use removeTicket approach
+            ticketRepo.removeTicket(ticket.getTicketId());
+            Ticket cancelled = new Ticket(ticket.getTicketId(), ticket.getMatchId(),
+                    ticket.getSeatId(), ticket.getSeatType(), ticket.getPrice(),
+                    ticket.getDate(), TicketStatus.CANCELLED);
+            ticketRepo.addTicket(cancelled);
+
+            // Release seat
+            stadiumCtrl.releaseSeat(ticket.getSeatId());
+        }
+
+        // Mark transaction as CANCELLED
+        target.setStatus(Transaction.Status.CANCELLED);
+        transactionRepo.saveAll(all);
+
+        System.out.println("[OK] Booking cancelled. Transaction: " + transactionId);
+        return true;
+    }
+
+    // ─────────────────────────────────────────────
+    //  QUERIES
+    // ─────────────────────────────────────────────
+    public List<Transaction> getMyTransactions(String fanId) {
+        return transactionRepo.findByFanId(fanId);
+    }
+
+    public Ticket getTicketById(String ticketId) {
+        return ticketRepo.findById(ticketId);
+    }
+
+    // ─────────────────────────────────────────────
+    //  HELPERS
+    // ─────────────────────────────────────────────
+    private String generateNextTicketId() {
+        // Read from repo – find max numeric suffix
+        // We use a simple timestamp-based approach for uniqueness
+        String ts = String.valueOf(System.currentTimeMillis() % 100_000);
+        return "T" + ts;
+    }
 }
