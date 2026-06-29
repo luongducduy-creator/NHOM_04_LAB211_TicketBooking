@@ -1,6 +1,7 @@
 package controller;
 
 import model.fan.Fan;
+import java.util.regex.Pattern;
 import model.ticket.Ticket;
 import model.transaction.Transaction;
 import repository.FanRepository;
@@ -9,6 +10,7 @@ import repository.TransactionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * T5 – FanController
@@ -34,12 +36,36 @@ public class FanController {
      * @return the created Fan, or null if email already exists / invalid input
      */
     public Fan register(String name, String email, String phone, int birthYear, String password) {
-        // Validate
-        if (name == null || name.isBlank())     { System.out.println("[ERROR] Name cannot be empty."); return null; }
-        if (email == null || !email.contains("@")) { System.out.println("[ERROR] Invalid email."); return null; }
-        if (phone == null || phone.isBlank())   { System.out.println("[ERROR] Phone cannot be empty."); return null; }
-        if (birthYear < 1900 || birthYear > 2010) { System.out.println("[ERROR] Invalid birth year."); return null; }
-        if (password == null || password.length() < 4) { System.out.println("[ERROR] Password must be at least 4 characters."); return null; }
+        // Validate input fields
+        // Name: must not be empty and cannot start with a special character
+        if (name == null || name.isBlank()) {
+            System.out.println("[ERROR] Name cannot be empty.");
+            return null;
+        }
+        if (!Pattern.matches("^[A-Za-z0-9].*", name)) {
+            System.out.println("[ERROR] Name must start with a letter or number, no leading special characters.");
+            return null;
+        }
+        // Email: basic format validation
+        if (email == null || !Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", email)) {
+            System.out.println("[ERROR] Invalid email format.");
+            return null;
+        }
+        // Phone: exactly 10 digits
+        if (phone == null || !Pattern.matches("\\d{10}", phone)) {
+            System.out.println("[ERROR] Phone must be exactly 10 digits.");
+            return null;
+        }
+        // Birth year: 4 digits, between 1930 and current year (2026)
+        if (birthYear < 1930 || birthYear > 2026) {
+            System.out.println("[ERROR] Birth year must be between 1930 and 2026.");
+            return null;
+        }
+        // Password: at least 4 characters
+        if (password == null || password.length() < 4) {
+            System.out.println("[ERROR] Password must be at least 4 characters.");
+            return null;
+        }
 
         // Check duplicate email
         List<Fan> all = fanRepo.getAllFans();
@@ -66,11 +92,15 @@ public class FanController {
      * @return Fan object if credentials match, null otherwise
      */
     public Fan login(String email, String password) {
+        // Basic validation for email format before authentication
         if (email == null || password == null) return null;
+        if (!Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", email)) {
+            System.out.println("[ERROR] Invalid email format.");
+            return null;
+        }
 
         for (Fan f : fanRepo.getAllFans()) {
-            if (f.getEmail().equalsIgnoreCase(email.trim())
-                    && f.getPassword().equals(password)) {
+            if (f.getEmail().equalsIgnoreCase(email.trim()) && f.getPassword().equals(password)) {
                 System.out.println("[OK] Welcome back, " + f.getName() + "!");
                 return f;
             }
@@ -109,6 +139,22 @@ public class FanController {
         fanRepo.updateFan(updatedFan);
         System.out.println("[OK] Profile updated.");
         return true;
+    }
+
+    private Fan loginFlow(Scanner sc) {
+        Fan fan = null;
+        while (fan == null) {
+            System.out.println("\n  ===== LOGIN =====");
+            System.out.print("  Email    : ");
+            String email = sc.nextLine().trim();
+            System.out.print("  Password : ");
+            String pass = sc.nextLine().trim();
+            fan = this.login(email, pass);
+            if (fan == null) {
+                System.out.println("[INFO] Please correct the above errors and try again.");
+            }
+        }
+        return fan;
     }
 
     // ─────────────────────────────────────────────

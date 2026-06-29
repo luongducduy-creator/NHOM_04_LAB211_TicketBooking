@@ -234,27 +234,110 @@ public class MainView {
     // ─────────────────────────────────────────────
     private Fan registerFlow() {
         System.out.println("\n  ===== REGISTER =====");
-        System.out.print("  Full name  : ");
-        String name = sc.nextLine().trim();
-        System.out.print("  Email      : ");
-        String email = sc.nextLine().trim();
-        System.out.print("  Phone      : ");
-        String phone = sc.nextLine().trim();
-        System.out.print("  Birth year : ");
-        int year = readInt();
-        System.out.print("  Password   : ");
-        String pass = sc.nextLine().trim();
-
-        return fanCtrl.register(name, email, phone, year, pass);
+        // Name validation: non-empty, starts with alphanumeric
+        String name;
+        while (true) {
+            System.out.print("  Full name  : ");
+            name = sc.nextLine().trim();
+            if (name.isEmpty()) {
+                System.out.println("[ERROR] Name cannot be empty.");
+                continue;
+            }
+            if (!java.util.regex.Pattern.matches("^[A-Za-z0-9].*", name)) {
+                System.out.println("[ERROR] Name must start with a letter or number, no leading special characters.");
+                continue;
+            }
+            break;
+        }
+        // Email validation
+        String email;
+        while (true) {
+            System.out.print("  Email      : ");
+            email = sc.nextLine().trim();
+            if (!java.util.regex.Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", email)) {
+                System.out.println("[ERROR] Invalid email format.");
+                continue;
+            }
+            // Check duplicate via controller without lambda
+            boolean duplicate = false;
+            for (Fan f : fanCtrl.getAllFans()) {
+                if (f.getEmail().equalsIgnoreCase(email)) {
+                    duplicate = true;
+                    break;
+                }
+            }
+            if (duplicate) {
+                System.out.println("[ERROR] Email already registered.");
+                continue;
+            }
+            break;
+        }
+        // Phone validation (10 digits)
+        String phone;
+        while (true) {
+            System.out.print("  Phone      : ");
+            phone = sc.nextLine().trim();
+            if (!java.util.regex.Pattern.matches("\\d{10}", phone)) {
+                System.out.println("[ERROR] Phone must be exactly 10 digits.");
+                continue;
+            }
+            break;
+        }
+        // Birth year validation
+        int year;
+        while (true) {
+            System.out.print("  Birth year : ");
+            year = readInt();
+            if (year < 1930 || year > 2026) {
+                System.out.println("[ERROR] Birth year must be between 1930 and 2026.");
+                continue;
+            }
+            break;
+        }
+        // Password validation
+        String pass;
+        while (true) {
+            System.out.print("  Password   : ");
+            pass = sc.nextLine().trim();
+            if (pass.length() < 4) {
+                System.out.println("[ERROR] Password must be at least 4 characters.");
+                continue;
+            }
+            break;
+        }
+        // Attempt registration (should succeed now)
+        Fan newFan = fanCtrl.register(name, email, phone, year, pass);
+        if (newFan == null) {
+            System.out.println("[ERROR] Registration failed due to unexpected validation. Please try again.");
+        }
+        return newFan;
     }
 
     private Fan loginFlow() {
         System.out.println("\n  ===== LOGIN =====");
-        System.out.print("  Email    : ");
-        String email = sc.nextLine().trim();
-        System.out.print("  Password : ");
-        String pass = sc.nextLine().trim();
-        return fanCtrl.login(email, pass);
+        // Email validation
+        String email;
+        while (true) {
+            System.out.print("  Email    : ");
+            email = sc.nextLine().trim();
+            if (!java.util.regex.Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", email)) {
+                System.out.println("[ERROR] Invalid email format.");
+                continue;
+            }
+            break;
+        }
+        // Password entry and authentication
+        String pass;
+        Fan fan = null;
+        while (fan == null) {
+            System.out.print("  Password : ");
+            pass = sc.nextLine().trim();
+            fan = fanCtrl.login(email, pass);
+            if (fan == null) {
+                System.out.println("[ERROR] Invalid email or password. Please try again.");
+            }
+        }
+        return fan;
     }
 
     private boolean loginStaffFlow() {

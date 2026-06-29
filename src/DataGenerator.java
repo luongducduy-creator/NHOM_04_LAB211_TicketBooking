@@ -49,28 +49,43 @@ public class DataGenerator {
     }
 
     static void generateSeats(int stadiumCount, int seatsPerStadium) throws IOException {
+        // Ensure stadium capacity does not exceed 4000 seats
+        if (seatsPerStadium > 4000) {
+            System.out.println("[WARNING] seatsPerStadium capped at 4000 per stadium.");
+            seatsPerStadium = 4000;
+        }
+        // Each stadium has 4 sections; enforce max 1000 seats per section
+        int maxSeatsPerSection = Math.min(1000, seatsPerStadium / 4);
         try (PrintWriter pw = new PrintWriter("data/seats.csv")) {
             pw.println("seatId,sectionId,row,number,status");
             int seatId = 1;
             for (int s = 1; s <= stadiumCount; s++) {
-                int vipIndex = rand.nextInt(4); // section VIP
+                // Determine VIP section for this stadium (randomly one of four)
+                int vipIndex = rand.nextInt(4); // 0..3
                 int vipSectionId = (s - 1) * 4 + vipIndex + 1;
-                for (int i = 1; i <= seatsPerStadium; i++) {
-                    String section;
-                    if (i <= seatsPerStadium * 0.1) {
-                        section = "SEC" + vipSectionId; // 10% ghế VIP
-                    } else {
-                        int normalIndex;
-                        do {
-                            normalIndex = rand.nextInt(4) + 1;
-                        } while (normalIndex == vipIndex + 1);
-                        section = "SEC" + ((s - 1) * 4 + normalIndex);
+                // Generate seats for each of the 4 sections
+                for (int sec = 1; sec <= 4; sec++) {
+                    int sectionId = (s - 1) * 4 + sec;
+                    int seatsForThisSection = maxSeatsPerSection;
+                    // Distribute any remainder seats to sections sequentially (should be zero when seatsPerStadium=4000)
+                    int remainder = seatsPerStadium - (maxSeatsPerSection * 4);
+                    if (remainder > 0 && sec <= remainder) {
+                        seatsForThisSection += 1;
                     }
-                    pw.printf("SEAT%d,%s,%d,%d,AVAILABLE%n", seatId++, section, (i - 1) / 100 + 1, (i - 1) % 100 + 1);
+                    for (int i = 1; i <= seatsForThisSection; i++) {
+                        String type = (sectionId == vipSectionId) ? "VIP" : "NORMAL";
+                        int columnsPerRow = 20;
+                        int row = (i - 1) / columnsPerRow + 1;
+                        int number = (i - 1) % columnsPerRow + 1;
+                        pw.printf("SEAT%d,SEC%d,%d,%d,AVAILABLE%n", seatId++, sectionId, row, number);
+                    }
                 }
             }
         }
-    }
+}
+    
+
+
 
     static void generateFans(int totalFans) throws IOException {
         try (PrintWriter pw = new PrintWriter("data/fans.csv")) {
