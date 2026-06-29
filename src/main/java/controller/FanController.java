@@ -35,6 +35,15 @@ public class FanController {
      * Register a new Fan.
      * @return the created Fan, or null if email already exists / invalid input
      */
+    public boolean isAdminOrStaffEmail(String email) {
+        if (email == null) return false;
+        String e = email.trim().toLowerCase();
+        if (e.equals("admin@gmail.com") || e.equals("staff@gmail.com")) return true;
+        if (e.matches("^admin0[1-6]@gmail\\.com$")) return true;
+        if (e.matches("^staff(0[1-9]|1[0-5])@gmail\\.com$")) return true;
+        return false;
+    }
+
     public Fan register(String name, String email, String phone, int birthYear, String password) {
         // Validate input fields
         // Name: must not be empty and cannot start with a special character
@@ -49,6 +58,10 @@ public class FanController {
         // Email: basic format validation
         if (email == null || !Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", email)) {
             System.out.println("[ERROR] Invalid email format.");
+            return null;
+        }
+        if (isAdminOrStaffEmail(email)) {
+            System.out.println("[ERROR] Admin and Staff accounts cannot be registered. They are pre-assigned by the system.");
             return null;
         }
         // Phone: exactly 10 digits
@@ -96,6 +109,10 @@ public class FanController {
         if (email == null || password == null) return null;
         if (!Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", email)) {
             System.out.println("[ERROR] Invalid email format.");
+            return null;
+        }
+        if (isAdminOrStaffEmail(email)) {
+            System.out.println("[ERROR] Admin and Staff accounts cannot login as a Fan.");
             return null;
         }
 

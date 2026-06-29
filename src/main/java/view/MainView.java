@@ -259,6 +259,10 @@ public class MainView {
                 continue;
             }
             // Check duplicate via controller without lambda
+            if (fanCtrl.isAdminOrStaffEmail(email)) {
+                System.out.println("[ERROR] Admin and Staff accounts cannot be registered. They are pre-assigned by the system.");
+                continue;
+            }
             boolean duplicate = false;
             for (Fan f : fanCtrl.getAllFans()) {
                 if (f.getEmail().equalsIgnoreCase(email)) {
@@ -346,11 +350,24 @@ public class MainView {
         String email = sc.nextLine().trim();
         System.out.print("  Password: ");
         String pass = sc.nextLine().trim();
-        if (email.equalsIgnoreCase("staff@gmail.com") && pass.equals("staff")) {
+        if (isValidStaff(email, pass)) {
             System.out.println("[OK] Staff logged in successfully!");
             return true;
         }
         System.out.println("[ERROR] Invalid email or password.");
+        return false;
+    }
+
+    private boolean isValidStaff(String email, String pass) {
+        if (email == null || pass == null) return false;
+        String e = email.trim().toLowerCase();
+        if (e.equals("staff@gmail.com") && pass.equals("staff")) {
+            return true;
+        }
+        if (e.matches("^staff(0[1-9]|1[0-5])@gmail\\.com$")) {
+            String prefix = e.substring(0, e.indexOf('@'));
+            return pass.equals("staff") || pass.equals(prefix);
+        }
         return false;
     }
 
@@ -360,11 +377,24 @@ public class MainView {
         String email = sc.nextLine().trim();
         System.out.print("  Password: ");
         String pass = sc.nextLine().trim();
-        if (email.equalsIgnoreCase("admin@gmail.com") && pass.equals("admin")) {
+        if (isValidAdmin(email, pass)) {
             System.out.println("[OK] Admin logged in successfully!");
             return true;
         }
         System.out.println("[ERROR] Invalid email or password.");
+        return false;
+    }
+
+    private boolean isValidAdmin(String email, String pass) {
+        if (email == null || pass == null) return false;
+        String e = email.trim().toLowerCase();
+        if (e.equals("admin@gmail.com") && pass.equals("admin")) {
+            return true;
+        }
+        if (e.matches("^admin0[1-6]@gmail\\.com$")) {
+            String prefix = e.substring(0, e.indexOf('@'));
+            return pass.equals("admin") || pass.equals(prefix);
+        }
         return false;
     }
 
