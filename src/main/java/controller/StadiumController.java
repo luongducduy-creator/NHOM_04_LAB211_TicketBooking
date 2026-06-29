@@ -28,6 +28,11 @@ public class StadiumController {
         this.sectionRepo = new SectionRepository();
         this.seatRepo    = new SeatRepository(System.getProperty("user.dir") + "/data/seats.csv");
         this.matchRepo   = new MatchRepository();
+        try {
+            this.seatRepo.autoRenumberSeats();
+        } catch (IOException e) {
+            System.out.println("[ERROR] Failed to auto-renumber seats: " + e.getMessage());
+        }
     }
 
     // ─────────────────────────────────────────────
