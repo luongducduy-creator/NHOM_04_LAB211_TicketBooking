@@ -19,6 +19,7 @@ public class MainView {
 
     private final FanController     fanCtrl;
     private final StadiumController stadiumCtrl;
+    @SuppressWarnings("unused")
     private final BookingController bookingCtrl;
     private final Scanner           sc;
 

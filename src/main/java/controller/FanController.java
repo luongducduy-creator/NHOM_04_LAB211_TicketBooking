@@ -2,7 +2,6 @@ package controller;
 
 import model.fan.Fan;
 import model.ticket.Ticket;
-import model.ticket.TicketStatus;
 import model.transaction.Transaction;
 import repository.FanRepository;
 import repository.TicketRepository;
