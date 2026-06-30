@@ -22,10 +22,17 @@ public class FanController {
     private final TicketRepository ticketRepo;
     private final TransactionRepository transactionRepo;
 
+    public FanController(TransactionRepository transactionRepo, TicketRepository ticketRepo) {
+        this.fanRepo = new FanRepository();
+        this.transactionRepo = transactionRepo;
+        this.ticketRepo = ticketRepo;
+    }
+
+    // ─────────────────────────────────────────────
+    //  DEFAULT CONSTRUCTOR (for backward compatibility)
+    // ─────────────────────────────────────────────
     public FanController() {
-        this.fanRepo         = new FanRepository();
-        this.ticketRepo      = new TicketRepository(System.getProperty("user.dir") + "/data/tickets.csv");
-        this.transactionRepo = new TransactionRepository();
+        this(new TransactionRepository(), new TicketRepository(System.getProperty("user.dir") + "/data/tickets.csv"));
     }
 
     // ─────────────────────────────────────────────

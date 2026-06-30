@@ -527,7 +527,13 @@ public class MainView {
         Section sec = sections.get(sIdx);
 
         Map<String, List<Seat>> seatMap = stadiumCtrl.buildSeatMap(sec.getSectionId());
-        new view.SeatMapView().display(seatMap, sec);
+        
+        List<String> bookedSeatIds = ticketRepo.findAll().stream()
+                .filter(t -> t.getMatchId().equals(chosen.getMatchId()) && t.getStatus() == model.ticket.TicketStatus.SOLD)
+                .map(Ticket::getSeatId)
+                .toList();
+
+        new view.SeatMapView().display(seatMap, sec, bookedSeatIds);
     }
 
     // ─────────────────────────────────────────────
@@ -540,12 +546,17 @@ public class MainView {
             System.out.println("  [!] You have no booking history.");
             return;
         }
-        System.out.printf("  %-12s %-10s %-10s %-8s %12s %-12s%n",
+        System.out.printf("  %-12s %-10s %-18s %-8s %12s %-12s%n",
                 "TicketID", "MatchID", "SeatID", "Type", "Price", "Status");
-        System.out.println("  " + "-".repeat(68));
+        System.out.println("  " + "-".repeat(76));
         for (Ticket t : tickets) {
-            System.out.printf("  %-12s %-10s %-10s %-8s %,12.0f %-12s%n",
-                    t.getTicketId(), t.getMatchId(), t.getSeatId(),
+            String seatDisplay = t.getSeatId();
+            model.seat.Seat seat = stadiumCtrl.getSeatById(t.getSeatId());
+            if (seat != null) {
+                seatDisplay += "(R" + seat.getRow() + "N" + seat.getNumber() + ")";
+            }
+            System.out.printf("  %-12s %-10s %-18s %-8s %,12.0f %-12s%n",
+                    t.getTicketId(), t.getMatchId(), seatDisplay,
                     t.getSeatType(), t.getPrice(), t.getStatus());
         }
     }
@@ -639,8 +650,13 @@ public class MainView {
                 return;
             }
             for (Ticket t : tickets) {
+                String seatDisplay = t.getSeatId();
+                model.seat.Seat seat = stadiumCtrl.getSeatById(t.getSeatId());
+                if (seat != null) {
+                    seatDisplay += "(R" + seat.getRow() + "N" + seat.getNumber() + ")";
+                }
                 System.out.printf("  Ticket: %s | Match: %s | Seat: %s | Type: %s | Status: %s%n",
-                        t.getTicketId(), t.getMatchId(), t.getSeatId(), t.getSeatType(), t.getStatus());
+                        t.getTicketId(), t.getMatchId(), seatDisplay, t.getSeatType(), t.getStatus());
             }
         } else if (choice == 2) {
             System.out.print("  Enter Ticket ID to confirm/sell: ");
@@ -685,7 +701,12 @@ public class MainView {
         System.out.println("\n  --- Ticket Details ---");
         System.out.println("  Ticket ID  : " + ticket.getTicketId());
         System.out.println("  Match ID   : " + ticket.getMatchId());
-        System.out.println("  Seat ID    : " + ticket.getSeatId());
+        String seatDisplay = ticket.getSeatId();
+        model.seat.Seat seat = stadiumCtrl.getSeatById(ticket.getSeatId());
+        if (seat != null) {
+            seatDisplay += "(R" + seat.getRow() + "N" + seat.getNumber() + ")";
+        }
+        System.out.println("  Seat ID    : " + seatDisplay);
         System.out.println("  Seat Type  : " + ticket.getSeatType());
         System.out.println("  Price      : " + ticket.getPrice());
         System.out.println("  Date       : " + ticket.getDate());

@@ -19,7 +19,7 @@ public class SeatMapView {
      * @param seatMap result of StadiumController.buildSeatMap(sectionId)
      * @param section the Section object (for header info)
      */
-    public void display(Map<String, List<Seat>> seatMap, Section section) {
+    public void display(Map<String, List<Seat>> seatMap, Section section, List<String> bookedSeatIds) {
         if (seatMap == null || seatMap.isEmpty()) {
             System.out.println("  No seats found for this section.");
             return;
@@ -29,56 +29,54 @@ public class SeatMapView {
                 ? section.getSectionId() + " - " + section.getName() + " (" + section.getType() + ")"
                 : "Section";
 
-        printBorder('╔', '═', '╗', 50);
-        printCentered("SEAT MAP: " + sectionHeader, 50);
-        printBorder('╠', '═', '╣', 50);
+        // Count stats
+        int totalSeats = 0, available = 0, booked = 0;
+        for (List<Seat> row : seatMap.values()) {
+            totalSeats += row.size();
+            for (Seat s : row) {
+                boolean isAvail = "AVAILABLE".equalsIgnoreCase(s.getStatus()) && (bookedSeatIds == null || !bookedSeatIds.contains(s.getSeatId()));
+                if (isAvail) available++;
+                else booked++;
+            }
+        }
 
-        // Sorted row numbers
+        System.out.println("\n  ╔══════════════════════════════════════════════════════╗");
+        System.out.printf ("  ║  SEAT MAP: %-42s║%n", sectionHeader);
+        System.out.printf ("  ║  Total: %-5d  Available: %-5d  Booked: %-10d║%n", totalSeats, available, booked);
+        System.out.println("  ╚══════════════════════════════════════════════════════╝");
+        System.out.println("  Legend: [ ] = Available   [X] = Booked");
+        System.out.println();
+
+        // Sorted rows
         List<Integer> sortedRows = seatMap.keySet().stream()
                 .map(Integer::parseInt)
                 .sorted()
                 .collect(Collectors.toList());
 
-        // Determine the maximum number of seats in any row (for header)
-        final int COLUMNS_PER_ROW = 20;
-        int maxColumns = seatMap.values().stream()
-                .mapToInt(List::size)
-                .max()
-                .orElse(0);
-        // Cap the displayed columns to the defined limit for better readability
-        maxColumns = Math.min(maxColumns, COLUMNS_PER_ROW);
-        // Fixed column width for each seat label (e.g., "[12]")
-        int colWidth = 5; // "[X] " is 4 chars, add one for spacing
+        final int SEATS_PER_LINE = 20;
 
-        // Print full column header (numbers) aligned under row label area
-        System.out.print("║        ");
-        for (int col = 1; col <= maxColumns; col++) {
-            System.out.printf("%-" + colWidth + "s", col);
-        }
-        System.out.println("║");
-
-        // Render each row
         for (Integer rowNum : sortedRows) {
             String rowKey = String.valueOf(rowNum);
             List<Seat> seatsInRow = seatMap.get(rowKey);
-            seatsInRow.sort((s1, s2) -> Integer.compare(Integer.parseInt(s1.getNumber()), Integer.parseInt(s2.getNumber())));
+            seatsInRow.sort((s1, s2) ->
+                    Integer.compare(Integer.parseInt(s1.getNumber()), Integer.parseInt(s2.getNumber())));
 
-            System.out.print("║  ROW " + padRight(rowKey + ":", 4) + " ");
-            for (int colIdx = 0; colIdx < maxColumns; colIdx++) {
-                if (colIdx < seatsInRow.size()) {
-                    Seat seat = seatsInRow.get(colIdx);
-                    boolean available = "AVAILABLE".equalsIgnoreCase(seat.getStatus());
-                    String label = available ? "[" + seat.getNumber() + "]" : "[X]";
-                    System.out.printf("%-" + colWidth + "s", label);
+            System.out.printf("  ROW %2d │ ", rowNum);
+            for (int i = 0; i < seatsInRow.size(); i++) {
+                Seat s = seatsInRow.get(i);
+                boolean avail = "AVAILABLE".equalsIgnoreCase(s.getStatus()) && (bookedSeatIds == null || !bookedSeatIds.contains(s.getSeatId()));
+                if (avail) {
+                    System.out.printf("[%s] ", s.getSeatId());
                 } else {
-                    System.out.printf("%-" + colWidth + "s", "");
+                    System.out.print("[X] ");
+                }
+                // Line break every SEATS_PER_LINE seats (except last)
+                if ((i + 1) % SEATS_PER_LINE == 0 && i + 1 < seatsInRow.size()) {
+                    System.out.printf("%n         │ ");
                 }
             }
-            System.out.println("║");
+            System.out.println();
         }
-
-        printBorder('╚', '═', '╝', 50);
-        System.out.println("  Legend:  [<num>] = Available   [X] = Booked/Unavailable");
         System.out.println();
     }
 
@@ -86,16 +84,32 @@ public class SeatMapView {
      * Print only available seats list.
      */
     public void displayAvailableSeats(List<Seat> availableSeats, String sectionId) {
-        System.out.println("\n  Available seats in section " + sectionId + ":");
+        System.out.println("  ╔══════════════════════════════════════════════════════════════════════╗");
+        printCentered("AVAILABLE SEATS - SECTION " + sectionId, 70);
+        System.out.println("  ╠══════════════════════════════════════════════════════════════════════╣");
+        
         if (availableSeats.isEmpty()) {
-            System.out.println("  No available seats.");
-            return;
+            System.out.println("  ║ No available seats.                                                  ║");
+        } else {
+            int count = 0;
+            System.out.print("  ║ ");
+            for (Seat s : availableSeats) {
+                System.out.printf("[%s] ", s.getSeatId());
+                count++;
+                if (count % 6 == 0) {
+                    System.out.println(" ║");
+                    if (count < availableSeats.size()) {
+                        System.out.print("  ║ ");
+                    }
+                }
+            }
+            if (count % 6 != 0) {
+                System.out.println(); // Just a simple newline, padding the right border exactly is tricky with variable seat length
+            }
         }
-        int count = 0;
-        for (Seat s : availableSeats) {
-            System.out.printf("  %-12s", s.getSeatId() + "(R" + s.getRow() + "N" + s.getNumber() + ")");
-            if (++count % 5 == 0) System.out.println();
-        }
+        System.out.println("  ╠══════════════════════════════════════════════════════════════════════╣");
+        System.out.printf ("  ║ Total Available Seats: %-46d║%n", availableSeats.size());
+        System.out.println("  ╚══════════════════════════════════════════════════════════════════════╝");
         System.out.println();
     }
 

@@ -19,10 +19,11 @@ public class Main {
         // ── Shared scanner (one instance for whole app) ──
         Scanner sc = new Scanner(System.in);
 
-        // ── Controller layer ──
-        FanController     fanCtrl     = new FanController();
+        // ── Controller layer (shared repos so both controllers see same data) ──
         StadiumController stadiumCtrl = new StadiumController();
         BookingController bookingCtrl = new BookingController(stadiumCtrl);
+        FanController     fanCtrl     = new FanController(bookingCtrl.getTransactionRepo(),
+                                                          bookingCtrl.getTicketRepo());
 
         // ── View layer (MVC entry point) ──
         MainView mainView = new MainView(fanCtrl, stadiumCtrl, bookingCtrl, sc);

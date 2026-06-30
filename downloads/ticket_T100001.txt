@@ -1,0 +1,14 @@
+=================================================
+            FOOTBALL MATCH TICKET                
+=================================================
+  Ticket ID    : T100001
+  Owner Name   : bao
+  Owner Email  : bao2@gmail.com
+  Match ID     : M1
+  Seat ID      : SEAT3917
+  Seat Type    : VIP
+  Price        : 800,000 VND
+  Match Date   : 2026-07-02
+  Status       : SOLD
+=================================================
+       Thank you for your purchase!              

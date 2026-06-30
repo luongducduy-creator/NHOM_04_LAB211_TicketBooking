@@ -58,6 +58,7 @@ public class BookingView {
             System.out.println("|  1. Book a ticket        |");
             System.out.println("|  2. My tickets           |");
             System.out.println("|  3. Cancel a booking     |");
+            System.out.println("|  4. Transaction History  |");
             System.out.println("|  0. Back                 |");
             System.out.println("+==========================+");
             System.out.print("Choose: ");
@@ -67,6 +68,7 @@ public class BookingView {
                 case 1 -> startBookingFlow(currentFan, false);
                 case 2 -> showMyTickets(currentFan);
                 case 3 -> cancelBookingFlow(currentFan);
+                case 4 -> showTransactionHistory(currentFan);
                 case 0 -> System.out.println("Returning...");
                 default -> System.out.println("[!] Invalid option.");
             }
@@ -135,10 +137,16 @@ public class BookingView {
     private void selectSeat(Fan fan, Match match, Section section, boolean isStaffBooking) {
         // Build and display seat map
         Map<String, List<Seat>> seatMap = stadiumCtrl.buildSeatMap(section.getSectionId());
-        seatMapView.display(seatMap, section);
+        
+        List<String> bookedSeatIds = bookingCtrl.getTicketRepo().findAll().stream()
+                .filter(t -> t.getMatchId().equals(match.getMatchId()) && t.getStatus() == model.ticket.TicketStatus.SOLD)
+                .map(Ticket::getSeatId)
+                .toList();
+
+        seatMapView.display(seatMap, section, bookedSeatIds);
 
         List<Seat> available = stadiumCtrl.getAvailableSeats(section.getSectionId());
-        seatMapView.displayAvailableSeats(available, section.getSectionId());
+        available.removeIf(s -> bookedSeatIds.contains(s.getSeatId()));
 
         if (available.isEmpty()) {
             System.out.println("[!] No seats available in this section.");
@@ -197,12 +205,14 @@ public class BookingView {
             return;
         }
 
-        Transaction tr = bookingCtrl.bookSeat(fan.getId(), match.getMatchId(), seatId, pm);
-        if (tr != null) {
-            System.out.println("\n  ✔ BOOKING SUCCESS");
-            System.out.println("  Transaction ID: " + tr.getTransactionId());
-            System.out.printf("  Amount paid   : %,.0f VND (%s)%n", tr.getAmount(), tr.getPaymentMethod());
-        }
+            Transaction tr = bookingCtrl.bookSeat(fan.getId(), match.getMatchId(), seatId, pm);
+            if (tr != null) {
+                System.out.println("\n  ✔ BOOKING SUCCESS");
+                System.out.println("  Transaction ID: " + tr.getTransactionId());
+                System.out.printf("  Amount paid   : %,.0f VND (%s)%n", tr.getAmount(), tr.getPaymentMethod());
+                // Show updated transaction history
+                showTransactionHistory(fan);
+            }
     }
 
     // ─────────────────────────────────────────────
@@ -215,12 +225,17 @@ public class BookingView {
             System.out.println("  [!] You have no tickets.");
             return;
         }
-        System.out.printf("  %-12s %-10s %-10s %-8s %12s %-10s %-10s%n",
+        System.out.printf("  %-12s %-10s %-18s %-8s %12s %-10s %-10s%n",
                 "TicketID", "MatchID", "SeatID", "Type", "Price", "Date", "Status");
-        System.out.println("  " + "-".repeat(78));
+        System.out.println("  " + "-".repeat(86));
         for (Ticket t : tickets) {
-            System.out.printf("  %-12s %-10s %-10s %-8s %,12.0f %-10s %-10s%n",
-                    t.getTicketId(), t.getMatchId(), t.getSeatId(),
+            String seatDisplay = t.getSeatId();
+            Seat seat = stadiumCtrl.getSeatById(t.getSeatId());
+            if (seat != null) {
+                seatDisplay += "(R" + seat.getRow() + "N" + seat.getNumber() + ")";
+            }
+            System.out.printf("  %-12s %-10s %-18s %-8s %,12.0f %-10s %-10s%n",
+                    t.getTicketId(), t.getMatchId(), seatDisplay,
                     t.getSeatType(), t.getPrice(), t.getDate(), t.getStatus());
         }
 
@@ -253,7 +268,12 @@ public class BookingView {
             bw.write("  Owner Name   : " + fan.getName() + "\n");
             bw.write("  Owner Email  : " + fan.getEmail() + "\n");
             bw.write("  Match ID     : " + ticket.getMatchId() + "\n");
-            bw.write("  Seat ID      : " + ticket.getSeatId() + "\n");
+            String seatDisplay = ticket.getSeatId();
+            Seat seat = stadiumCtrl.getSeatById(ticket.getSeatId());
+            if (seat != null) {
+                seatDisplay += "(R" + seat.getRow() + "N" + seat.getNumber() + ")";
+            }
+            bw.write("  Seat ID      : " + seatDisplay + "\n");
             bw.write("  Seat Type    : " + ticket.getSeatType() + "\n");
             bw.write("  Price        : " + String.format("%,.0f VND", ticket.getPrice()) + "\n");
             bw.write("  Match Date   : " + ticket.getDate() + "\n");

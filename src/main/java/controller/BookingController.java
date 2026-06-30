@@ -25,11 +25,22 @@ public class BookingController {
     private final StadiumController     stadiumCtrl;
 
     public BookingController(StadiumController stadiumCtrl) {
-        this.ticketRepo      = new TicketRepository(System.getProperty("user.dir") + "/data/tickets.csv");
-        this.transactionRepo = new TransactionRepository();
+        this(stadiumCtrl,
+             new TicketRepository(System.getProperty("user.dir") + "/data/tickets.csv"),
+             new TransactionRepository());
+    }
+
+    public BookingController(StadiumController stadiumCtrl,
+                             TicketRepository ticketRepo,
+                             TransactionRepository transactionRepo) {
+        this.ticketRepo      = ticketRepo;
+        this.transactionRepo = transactionRepo;
         this.invoiceRepo     = new InvoiceRepository();
         this.stadiumCtrl     = stadiumCtrl;
     }
+
+    public TicketRepository getTicketRepo() { return ticketRepo; }
+    public TransactionRepository getTransactionRepo() { return transactionRepo; }
 
     // ─────────────────────────────────────────────
     //  BOOK A SEAT  (NO_LOCK baseline)
@@ -70,6 +81,15 @@ public class BookingController {
         Section section = stadiumCtrl.getSectionById(seat.getSectionId());
         String seatType = (section != null) ? section.getType().name() : "NORMAL";
         double price = seatType.equalsIgnoreCase("VIP") ? 800_000.0 : 300_000.0;
+
+        // Check if ticket is already sold for this match
+        List<Ticket> allTickets = ticketRepo.findAll();
+        for (Ticket t : allTickets) {
+            if (t.getMatchId().equals(matchId) && t.getSeatId().equalsIgnoreCase(seatId) && t.getStatus() == TicketStatus.SOLD) {
+                System.out.println("[ERROR] Seat " + seatId + " is already booked for this match.");
+                return null;
+            }
+        }
 
         // 4. Mark seat as BOOKED (NO_LOCK – single-thread safe)
         boolean marked = stadiumCtrl.markSeatBooked(seatId);
