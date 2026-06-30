@@ -8,6 +8,8 @@ import model.ticket.TicketStatus;
 import model.transaction.Transaction;
 import repository.TicketRepository;
 import repository.TransactionRepository;
+import repository.InvoiceRepository;
+import model.invoice.Invoice;
 
 import java.util.List;
 
@@ -19,11 +21,13 @@ public class BookingController {
 
     private final TicketRepository      ticketRepo;
     private final TransactionRepository transactionRepo;
+    private final InvoiceRepository     invoiceRepo;
     private final StadiumController     stadiumCtrl;
 
     public BookingController(StadiumController stadiumCtrl) {
         this.ticketRepo      = new TicketRepository(System.getProperty("user.dir") + "/data/tickets.csv");
         this.transactionRepo = new TransactionRepository();
+        this.invoiceRepo     = new InvoiceRepository();
         this.stadiumCtrl     = stadiumCtrl;
     }
 
@@ -85,7 +89,12 @@ public class BookingController {
                 Transaction.Status.SUCCESS);
         transactionRepo.add(transaction);
 
-        System.out.println("[OK] Booking successful! Ticket ID: " + ticketId + "  |  Transaction: " + transId);
+        // 7. Create and persist Invoice
+        String invId = invoiceRepo.generateNextInvoiceId();
+        Invoice invoice = new Invoice(invId, ticketId, price, match.getDate());
+        invoiceRepo.addInvoice(invoice);
+
+        System.out.println("[OK] Booking successful! Ticket ID: " + ticketId + "  |  Transaction: " + transId + "  |  Invoice: " + invId);
         return transaction;
     }
 
@@ -156,9 +165,6 @@ public class BookingController {
     //  HELPERS
     // ─────────────────────────────────────────────
     private String generateNextTicketId() {
-        // Read from repo – find max numeric suffix
-        // We use a simple timestamp-based approach for uniqueness
-        String ts = String.valueOf(System.currentTimeMillis() % 100_000);
-        return "T" + ts;
+        return ticketRepo.generateNextTicketId();
     }
 }

@@ -44,6 +44,11 @@ public class TicketRepository {
         }
     }
 
+    // Lấy toàn bộ danh sách vé
+    public List<Ticket> findAll() {
+        return new ArrayList<>(tickets);
+    }
+
     // Đếm số vé theo trạng thái
     public long countByStatus(TicketStatus status) {
         return tickets.stream().filter(t -> t.getStatus() == status).count();
@@ -127,5 +132,18 @@ public class TicketRepository {
             saveData(); // cập nhật file CSV
         }
         return removed;
+    }
+
+    // ✅ Sinh ID vé tự động tăng
+    public String generateNextTicketId() {
+        int max = 0;
+        for (Ticket t : tickets) {
+            String id = t.getTicketId().replaceAll("[^0-9]", "");
+            try {
+                max = Math.max(max, Integer.parseInt(id));
+            } catch (Exception ignored) {
+            }
+        }
+        return "T" + (max + 1);
     }
 }

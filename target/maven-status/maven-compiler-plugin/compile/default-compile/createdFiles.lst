@@ -1,4 +1,5 @@
 model\fan\Fan.class
+model\invoice\Invoice.class
 view\BookingView.class
 model\ticket\Ticket.class
 model\Stadium.class
@@ -12,15 +13,20 @@ model\transaction\Transaction$PaymentMethod.class
 model\transaction\Transaction$Status.class
 utils\InputUtils.class
 model\match\Match.class
+repository\InvoiceRepository.class
+repository\NotificationRepository.class
 repository\MatchRepository.class
 repository\TicketRepository.class
+model\notification\Notification.class
 repository\FanRepository.class
 view\ReportView.class
+model\feedback\Feedback.class
 repository\StadiumRepository.class
 repository\SectionRepository.class
 repository\TransactionRepository.class
 view\SeatMapView.class
 model\ticket\TicketStatus.class
+repository\FeedbackRepository.class
 repository\SeatRepository.class
 utils\ValidationUtils.class
 view\ReportView$1.class
