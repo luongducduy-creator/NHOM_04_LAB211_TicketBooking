@@ -2,7 +2,9 @@ model\fan\Fan.class
 model\invoice\Invoice.class
 view\BookingView.class
 model\ticket\Ticket.class
+utilities\CsvCleaner.class
 model\Stadium.class
+utilities\FanIdNormalizer.class
 app\Main.class
 repository\CsvRepository.class
 model\seat\Seat.class
@@ -17,6 +19,7 @@ repository\InvoiceRepository.class
 repository\NotificationRepository.class
 repository\MatchRepository.class
 repository\TicketRepository.class
+utilities\CsvSplitter.class
 model\notification\Notification.class
 repository\FanRepository.class
 view\ReportView.class
@@ -31,6 +34,7 @@ repository\SeatRepository.class
 utils\ValidationUtils.class
 view\ReportView$1.class
 controller\BookingController.class
+utilities\SeatDataGenerator.class
 view\MainView.class
 controller\FanController.class
 model\base\BaseEntity.class

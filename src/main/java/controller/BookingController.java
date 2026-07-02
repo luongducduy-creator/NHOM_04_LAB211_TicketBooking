@@ -12,6 +12,7 @@ import repository.InvoiceRepository;
 import model.invoice.Invoice;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * T5 – BookingController  (NO_LOCK strategy – single-thread)
@@ -106,10 +107,10 @@ public class BookingController {
         // 6. Create and persist Transaction
         String transId        = transactionRepo.generateNextId();
         Transaction transaction = new Transaction(transId, ticketId, fanId, price, paymentMethod,
-                Transaction.Status.SUCCESS);
+                Transaction.Status.PENDING);
         transactionRepo.add(transaction);
-
-        // 7. Create and persist Invoice
+        // Auto-confirm any pending transactions older than 3 days
+        autoConfirmPendingTransactions();
         String invId = invoiceRepo.generateNextInvoiceId();
         Invoice invoice = new Invoice(invId, ticketId, price, match.getDate());
         invoiceRepo.addInvoice(invoice);
@@ -187,4 +188,76 @@ public class BookingController {
     private String generateNextTicketId() {
         return ticketRepo.generateNextTicketId();
     }
+
+    // ─────────────────────────────────────────────
+    //  STAFF OPERATIONS
+    // ─────────────────────────────────────────────
+    /**
+     * Retrieve all pending transactions for staff review.
+     */
+    public java.util.List<Transaction> getPendingTransactions() {
+        java.util.List<Transaction> all = transactionRepo.findAll();
+        java.util.List<Transaction> pending = new java.util.ArrayList<>();
+        for (Transaction t : all) {
+            if (t.getStatus() == Transaction.Status.PENDING) {
+                pending.add(t);
+            }
+        }
+        return pending;
+    }
+
+    /**
+     * Staff confirms a pending transaction, changing its status to SUCCESS.
+     */
+    public boolean staffConfirmTransaction(String transactionId) {
+        java.util.List<Transaction> all = transactionRepo.findAll();
+        boolean found = false;
+        for (Transaction t : all) {
+            if (t.getTransactionId().equalsIgnoreCase(transactionId)) {
+                if (t.getStatus() != Transaction.Status.PENDING) {
+                    System.out.println("[ERROR] Transaction is not pending: " + transactionId);
+                    return false;
+                }
+                t.setStatus(Transaction.Status.SUCCESS);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            System.out.println("[ERROR] Transaction not found: " + transactionId);
+            return false;
+        }
+        transactionRepo.saveAll(all);
+        System.out.println("[OK] Staff confirmed transaction: " + transactionId);
+        return true;
+    }
+
+    // Additional helper to auto-confirm pending transactions older than 3 days
+    public void autoConfirmPendingTransactions() {
+        List<Transaction> all = transactionRepo.findAll();
+        boolean changed = false;
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        for (Transaction t : all) {
+            if (t.getStatus() == Transaction.Status.PENDING) {
+                try {
+                    java.time.LocalDateTime created = java.time.LocalDateTime.parse(t.getCreatedAt());
+                    if (created.plusDays(3).isBefore(now) || created.plusDays(3).isEqual(now)) {
+                        t.setStatus(Transaction.Status.SUCCESS);
+                        changed = true;
+                    }
+                } catch (Exception e) {
+                    // ignore parse errors
+                }
+            }
+        }
+        if (changed) {
+            transactionRepo.saveAll(all);
+            System.out.println("[INFO] Auto-confirmed pending transactions older than 3 days.");
+        }
+    }
+
+
+
+    
+
 }

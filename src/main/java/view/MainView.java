@@ -641,10 +641,11 @@ public class MainView {
     private void staffManageBookingFlow() {
         System.out.println("\n  ===== MANAGE BOOKINGS =====");
         System.out.println("  1. View Booking List");
-        System.out.println("  2. Confirm Booking (Manual Payment)");
+        System.out.println("  2. Confirm Pending Transaction (PENDING -> SUCCESS)");
         System.out.println("  3. Cancel Booking");
-        System.out.print("  Choose: ");
+        System.out.print("  Chon so (1/2/3): ");
         int choice = readInt();
+
         if (choice == 1) {
             System.out.println("\n  ===== ALL BOOKINGS =====");
             List<Ticket> tickets = ticketRepo.findAll();
@@ -661,24 +662,40 @@ public class MainView {
                 System.out.printf("  Ticket: %s | Match: %s | Seat: %s | Type: %s | Status: %s%n",
                         t.getTicketId(), t.getMatchId(), seatDisplay, t.getSeatType(), t.getStatus());
             }
+
         } else if (choice == 2) {
-            System.out.print("  Enter Ticket ID to confirm/sell: ");
-            String tId = sc.nextLine().trim();
-            Ticket ticket = ticketRepo.findById(tId);
-            if (ticket != null) {
-                ticket.setStatus(model.ticket.TicketStatus.SOLD);
-                ticketRepo.removeTicket(tId);
-                ticketRepo.addTicket(ticket);
-                System.out.println("[OK] Ticket " + tId + " is now set to SOLD.");
-            } else {
-                System.out.println("[ERROR] Ticket not found.");
+            // Hiện danh sách PENDING
+            List<Transaction> pending = bookingCtrl.getPendingTransactions();
+            if (pending.isEmpty()) {
+                System.out.println("  [INFO] Khong co giao dich nao dang PENDING.");
+                return;
             }
+            System.out.println("\n  ===== GIAO DICH CHO XAC NHAN =====");
+            System.out.printf("  %-12s %-12s %-12s %15s %-10s%n",
+                    "Trans ID", "Ticket ID", "Fan ID", "So tien (VND)", "Phuong thuc");
+            System.out.println("  " + "-".repeat(70));
+            for (Transaction t : pending) {
+                System.out.printf("  %-12s %-12s %-12s %,15.0f %-10s%n",
+                        t.getTransactionId(), t.getTicketId(), t.getFanId(),
+                        t.getAmount(), t.getPaymentMethod());
+            }
+            System.out.print("\n  Nhap Transaction ID de xac nhan (0 de quay lai): ");
+            String transId = sc.nextLine().trim();
+            if (transId.equals("0") || transId.isEmpty()) return;
+            boolean ok = bookingCtrl.staffConfirmTransaction(transId);
+            if (ok) {
+                System.out.println("[OK] Giao dich " + transId + " da duoc xac nhan -> SUCCESS.");
+            } else {
+                System.out.println("[ERROR] Khong the xac nhan. Kiem tra lai ID hoac trang thai.");
+            }
+
         } else if (choice == 3) {
             System.out.print("  Enter Fan ID: ");
             String fanId = sc.nextLine().trim();
             staffCancelBookingFlow(fanId);
         }
     }
+
 
     private void staffSellTicketFlow() {
         System.out.println("\n  ===== BOOK TICKET FOR FAN =====");
