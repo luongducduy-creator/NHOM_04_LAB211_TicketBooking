@@ -80,17 +80,20 @@ public class FanRepository {
         ArrayList<Fan> fans = getAllFans();
 
         try (FileWriter fw = new FileWriter(FILE_NAME)) {
+            // Write CSV header to keep file structure intact
+            fw.write("fanId,fullName,email,phone,birthYear,password");
+            fw.write(System.lineSeparator());
 
+            java.util.HashSet<String> writtenIds = new java.util.HashSet<>();
             for (Fan f : fans) {
-
-                fw.write(
-                        f.getId().equals(newFan.getId())
-                                ? newFan.toCSV()
-                                : f.toCSV());
-
+                if (writtenIds.contains(f.getId())) {
+                    continue; // skip duplicate entries
+                }
+                String line = f.getId().equals(newFan.getId()) ? newFan.toCSV() : f.toCSV();
+                fw.write(line);
                 fw.write(System.lineSeparator());
+                writtenIds.add(f.getId());
             }
-
         } catch (Exception e) {
             System.out.println("Loi update");
         }

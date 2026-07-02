@@ -42,6 +42,7 @@ public class Fan {
 
     /** CSV format: fanId,fullName,email,phone,birthYear,password */
     public String toCSV() {
+        // Plain CSV without surrounding quotes
         return id + "," + name + "," + email + "," + phone + "," + birthYear + "," + password;
     }
 
@@ -49,9 +50,13 @@ public class Fan {
         if (line == null || line.isBlank()) return null;
         String[] data = line.split("\\s*,\\s*");
         if (data.length < 5) return null;
+        // Remove surrounding quotes from each field if present
+        for (int i = 0; i < data.length; i++) {
+            data[i] = data[i].replaceAll("^\"|\"$", "").trim();
+        }
         // Skip header
-        if (data[0].trim().equalsIgnoreCase("fanId")) return null;
-        String password = (data.length >= 6) ? data[5].trim() : "123456";
+        if (data[0].equalsIgnoreCase("fanId")) return null;
+        String password = (data.length >= 6) ? data[5] : "123456";
         try {
             return new Fan(data[0], data[1], data[2], data[3],
                     Integer.parseInt(data[4]), password);

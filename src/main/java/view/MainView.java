@@ -407,7 +407,10 @@ public class MainView {
 
         Fan fan = null;
         for (Fan f : fanCtrl.getAllFans()) {
-            if (f.getEmail().equalsIgnoreCase(email) && f.getPhone().equals(phone)) {
+            boolean emailMatches = f.getEmail().equalsIgnoreCase(email);
+            // If stored phone is empty, ignore the phone check (allow recovery by email only)
+            boolean phoneMatches = f.getPhone().equals(phone) || f.getPhone().isEmpty();
+            if (emailMatches && phoneMatches) {
                 fan = f;
                 break;
             }

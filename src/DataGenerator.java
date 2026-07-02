@@ -89,9 +89,9 @@ public class DataGenerator {
 
     static void generateFans(int totalFans) throws IOException {
         try (PrintWriter pw = new PrintWriter("data/fans.csv")) {
-            pw.println("fanId,fullName,email,phone,birthYear");
+            pw.println("fanId,fullName,email,phone,birthYear,password");
             for (int i = 1; i <= totalFans; i++) {
-                pw.printf("FAN%d,Fan %d,fan%d@gmail.com,09%08d,%d%n",
+                pw.printf("FAN%d,Fan %d,fan%d@gmail.com,09%08d,%d,password123%n",
                         i, i, i, rand.nextInt(99999999), 1980 + rand.nextInt(25));
             }
         }

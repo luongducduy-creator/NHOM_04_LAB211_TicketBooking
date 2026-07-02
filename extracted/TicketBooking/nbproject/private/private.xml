@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/FanTest.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/build.xml</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/model/TransactionStatus.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/service/TicketService.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/model/BaseEntity.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/model/MatchStatus.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/TicketRepository.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/data/matches.csv</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/model/Transaction.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/TransactionTest.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/SeatTest.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/data/fans.csv</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/service/TransactionService.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/MainTest.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/SeatRepository.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/TicketTest.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/data/transactions.csv</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/model/Seat.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/test/service/MatchServiceJUnitTest.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/service/MatchService.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/FanRepository.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/TransactionRepository.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/test/service/TicketServiceJUnitTest.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/data/tickets.csv</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/model/Fan.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/model/Ticket.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/MatchRepository.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/service/FanService.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/test/service/FanServiceJUnitTest.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/test/service/TransactionServiceJUnitTest.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/model/Match.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/repository/CsvRepository.java</file>
+            <file>file:/E:/NHOM_04_LAB211_TicketBooking/TicketBooking/src/main/MainApp.java</file>
+        </group>
+    </open-files>
+</project-private>
