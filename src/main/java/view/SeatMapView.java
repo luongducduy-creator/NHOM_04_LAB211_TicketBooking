@@ -44,7 +44,7 @@ public class SeatMapView {
         System.out.printf ("  ║  SEAT MAP: %-42s║%n", sectionHeader);
         System.out.printf ("  ║  Total: %-5d  Available: %-5d  Booked: %-10d║%n", totalSeats, available, booked);
         System.out.println("  ╚══════════════════════════════════════════════════════╝");
-        System.out.println("  Legend: [ ] = Available   [X] = Booked");
+        System.out.println("  Legend: [ ] = Available   [X] = Sold/Booked");
         System.out.println();
 
         // Sorted rows

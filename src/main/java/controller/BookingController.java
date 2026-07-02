@@ -50,7 +50,7 @@ public class BookingController {
      * Book a seat for a match.
      * Steps:
      *   1. Verify seat exists and is AVAILABLE
-     *   2. Mark seat as BOOKED
+     *   2. Mark seat as SOLD
      *   3. Determine ticket type and price from section
      *   4. Create Ticket (SOLD) and persist
      *   5. Create Transaction and persist
@@ -92,7 +92,7 @@ public class BookingController {
             }
         }
 
-        // 4. Mark seat as BOOKED (NO_LOCK – single-thread safe)
+        // 4. Mark seat as SOLD (NO_LOCK – single-thread safe)
         boolean marked = stadiumCtrl.markSeatBooked(seatId);
         if (!marked) {
             System.out.println("[ERROR] Seat is no longer available (concurrency issue).");

@@ -138,7 +138,7 @@ public class StadiumController {
     }
 
     /**
-     * Mark seat as BOOKED and persist.
+     * Mark seat as SOLD and persist.
      */
     public boolean markSeatBooked(String seatId) {
         try {
@@ -148,7 +148,7 @@ public class StadiumController {
                     if (!"AVAILABLE".equalsIgnoreCase(s.getStatus())) {
                         return false; // Already taken
                     }
-                    s.setStatus("BOOKED");
+                    s.setStatus("SOLD");
                     seatRepo.saveAll(seats);
                     return true;
                 }

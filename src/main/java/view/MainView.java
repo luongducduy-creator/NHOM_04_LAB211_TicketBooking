@@ -956,7 +956,7 @@ public class MainView {
                 String row = sc.nextLine().trim();
                 System.out.print("  Number: ");
                 String num = sc.nextLine().trim();
-                System.out.print("  Status (AVAILABLE/BOOKED): ");
+                System.out.print("  Status (AVAILABLE/SOLD): ");
                 String stat = sc.nextLine().trim();
                 seats.add(new Seat(id, sec, row, num, stat));
                 seatRepo.saveAll(seats);
@@ -998,7 +998,7 @@ public class MainView {
                 String id = sc.nextLine().trim();
                 Seat target = seats.stream().filter(s -> s.getSeatId().equalsIgnoreCase(id)).findFirst().orElse(null);
                 if (target != null) {
-                    System.out.print("  New Status (AVAILABLE/BOOKED): ");
+                    System.out.print("  New Status (AVAILABLE/SOLD): ");
                     String stat = sc.nextLine().trim();
                     if (!stat.isEmpty()) {
                         target.setStatus(stat.toUpperCase());
