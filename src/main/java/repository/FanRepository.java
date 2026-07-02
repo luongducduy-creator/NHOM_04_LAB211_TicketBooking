@@ -27,6 +27,8 @@ public class FanRepository {
         } catch (Exception e) {
             System.out.println("Loi ghi file");
         }
+        // Keep cleaned copy up‑to‑date
+        saveCleanedCopy();
     }
 
     public ArrayList<Fan> getAllFans() {
@@ -97,6 +99,8 @@ public class FanRepository {
         } catch (Exception e) {
             System.out.println("Loi update");
         }
+        // Keep cleaned copy up‑to‑date after update
+        saveCleanedCopy();
     }
 
     public void deleteFan(String id) {
@@ -116,6 +120,8 @@ public class FanRepository {
         } catch (Exception e) {
             System.out.println("Loi delete");
         }
+        // Keep cleaned copy up‑to‑date after deletion
+        saveCleanedCopy();
     }
 
     public ArrayList<Fan> findByCondition(Predicate<Fan> condition) {
@@ -130,4 +136,25 @@ public class FanRepository {
 
         return result;
     }
-}
+    /**
+     * Write a cleaned version of the CSV (quotes removed) to
+     * <project_root>/data/fans_cleaned.tmp. This method is called after
+     * any modification (add / update / delete) to keep the cleaned copy in
+     * sync with the main file.
+     */
+    private void saveCleanedCopy() {
+        String cleanedPath = System.getProperty("user.dir") + "/data/fans_cleaned.tmp";
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(cleanedPath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // Remove surrounding double quotes from each field
+                String cleaned = line.replaceAll("\"", "");
+                bw.write(cleaned);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("[WARN] Could not write cleaned fans file: " + e.getMessage());
+        }
+    }
+}

@@ -1,4 +1,4 @@
-"fanId","fullName","email","phone","birthYear","password"
+fanId,fullName,email,phone,birthYear,password
 "FAN1","Fan 1","fan1@gmail.com","0918666965","2001","password123"
 "FAN2","Fan 2","fan2@gmail.com","0942615322","1995","password123"
 "FAN3","Fan 3","fan3@gmail.com","0968180284","1986","password123"
@@ -49999,11 +49999,7 @@
 "FAN49998","Fan 49998","fan49998@gmail.com","0967046338","1990","password123"
 "FAN49999","Fan 49999","fan49999@gmail.com","0933767204","1989","password123"
 "FAN50000","Fan 50000","fan50000@gmail.com","0923312040","1994","password123"
-"F004","Duy","duy@gmail.com",,,"password123"
-"F004","Duy","duy@gmail.com",,,"password123"
 "F001","Duy","duy@gmail.com","0912345678","2004","password123"
-"F001","Duy","duy@gmail.com","0912345678","2004","password123"
-"F001","A","a@gmail.com","1","2000","password123"
 "F002","B","b@yahoo.com","2","2001","password123"
 "FAN50001","Test Fan","smoketest@lab211.com","0901234567","1999","password123"
 "FAN50002","fan01","fan01@gmail.com","0123456789","2006","password123"
@@ -50013,5 +50009,4 @@
 "FAN50007","bao","bao2@gmail.com","0123456789","2006","password123"
 "FAN50008","staff18@gmail.com","staff18@gmail.com","1234556789","2006","password123"
 "FAN50009","Long","long123@gmail.com","0123456789","2004","password123"
-FAN1,bao,baobao@gmail.com,0123456789,2006,1234
 "FAN50010","r","r@gmaul.com","0123456789","2006","1234"
