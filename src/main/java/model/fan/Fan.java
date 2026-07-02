@@ -43,7 +43,9 @@ public class Fan {
     /** CSV format: fanId,fullName,email,phone,birthYear,password */
     public String toCSV() {
         // Plain CSV without surrounding quotes
-        return id + "," + name + "," + email + "," + phone + "," + birthYear + "," + password;
+        // Return CSV line with each field quoted as required
+        return String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%d\",\"%s\"",
+                id, name, email, phone, birthYear, password);
     }
 
     public static Fan fromCsvLine(String line) {

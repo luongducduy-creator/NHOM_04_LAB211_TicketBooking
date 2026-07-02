@@ -82,17 +82,20 @@ public class DataGenerator {
                 }
             }
         }
-}
-    
-
-
+    }
 
     static void generateFans(int totalFans) throws IOException {
+        // Skip generation if the fans.csv file already exists with data to preserve existing records
+        java.io.File fanFile = new java.io.File("data/fans.csv");
+        if (fanFile.exists() && fanFile.length() > 0) {
+            // Existing data found; do not regenerate to avoid data loss
+            return;
+        }
         try (PrintWriter pw = new PrintWriter("data/fans.csv")) {
             pw.println("fanId,fullName,email,phone,birthYear,password");
             for (int i = 1; i <= totalFans; i++) {
-                pw.printf("FAN%d,Fan %d,fan%d@gmail.com,09%08d,%d,password123%n",
-                        i, i, i, rand.nextInt(99999999), 1980 + rand.nextInt(25));
+                pw.printf("\"FAN%d\",\"Fan %d\",\"fan%d@gmail.com\",\"09%08d\",%d,\"password123\"%n",
+                    i, i, i, rand.nextInt(99999999), 1980 + rand.nextInt(25));
             }
         }
     }
