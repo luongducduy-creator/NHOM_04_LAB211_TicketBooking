@@ -1084,50 +1084,101 @@ public class MainView {
         }
     }
 
-    // 5. Ticket Type Management (Displays rates & mock editing)
+    // 5. Ticket Type Management
+    private double vipPrice   = 800_000.0;
+    private double normalPrice = 300_000.0;
+
     private void adminManageTicketTypes() {
         System.out.println("\n  ===== TICKET TYPE MANAGEMENT =====");
-        System.out.println("  1. View Current Pricing & Ticket Types");
+        System.out.println("  1. View Current Pricing");
         System.out.println("  2. Update Ticket Type Pricing");
         System.out.print("  Choose: ");
         int choice = readInt();
         if (choice == 1) {
-            System.out.println("    - [VIP] Ticket Type: 800,000 VND");
-            System.out.println("    - [NORMAL] Ticket Type: 300,000 VND");
+            System.out.printf("    - [VIP]    Gia hien tai: %,.0f VND%n", vipPrice);
+            System.out.printf("    - [NORMAL] Gia hien tai: %,.0f VND%n", normalPrice);
         } else if (choice == 2) {
-            System.out.println("[INFO] Price update applies. System pricing VIP = 800k, NORMAL = 300k.");
+            System.out.println("  Chon loai ve can cap nhat:");
+            System.out.println("  1. VIP");
+            System.out.println("  2. NORMAL");
+            System.out.print("  Chon: ");
+            int typeChoice = readInt();
+            if (typeChoice == 1) {
+                System.out.printf("  Gia VIP hien tai: %,.0f VND%n", vipPrice);
+                System.out.print("  Nhap gia moi (VND): ");
+                String priceStr = sc.nextLine().trim();
+                try {
+                    double newPrice = Double.parseDouble(priceStr);
+                    if (newPrice <= 0) { System.out.println("[ERROR] Gia phai lon hon 0."); return; }
+                    vipPrice = newPrice;
+                    System.out.printf("[OK] Da cap nhat gia VIP thanh: %,.0f VND%n", vipPrice);
+                } catch (NumberFormatException e) {
+                    System.out.println("[ERROR] Gia khong hop le.");
+                }
+            } else if (typeChoice == 2) {
+                System.out.printf("  Gia NORMAL hien tai: %,.0f VND%n", normalPrice);
+                System.out.print("  Nhap gia moi (VND): ");
+                String priceStr = sc.nextLine().trim();
+                try {
+                    double newPrice = Double.parseDouble(priceStr);
+                    if (newPrice <= 0) { System.out.println("[ERROR] Gia phai lon hon 0."); return; }
+                    normalPrice = newPrice;
+                    System.out.printf("[OK] Da cap nhat gia NORMAL thanh: %,.0f VND%n", normalPrice);
+                } catch (NumberFormatException e) {
+                    System.out.println("[ERROR] Gia khong hop le.");
+                }
+            } else {
+                System.out.println("[ERROR] Lua chon khong hop le.");
+            }
         }
     }
 
     // 6. Booking Management
     private void adminManageBookings() {
         System.out.println("\n  ===== BOOKING MANAGEMENT (ADMIN) =====");
-        System.out.println("  1. View All Bookings");
-        System.out.println("  2. Confirm Booking Status");
+        System.out.println("  1. View All Bookings (Tickets)");
+        System.out.println("  2. Confirm Pending Transaction (PENDING -> SUCCESS)");
         System.out.println("  3. Cancel/Void Ticket Booking");
         System.out.print("  Choose: ");
         int choice = readInt();
         List<Ticket> tickets = ticketRepo.findAll();
         if (choice == 1) {
             System.out.println("\n  ----- Booking list -----");
+            System.out.printf("  %-12s %-10s %-12s %-8s %15s %-10s%n",
+                    "Ticket ID", "Match ID", "Seat ID", "Type", "Price (VND)", "Status");
+            System.out.println("  " + "-".repeat(75));
             for (Ticket t : tickets) {
-                System.out.printf("    Ticket: %s | Match: %s | Seat: %s | Price: %,.0f | Status: %s%n",
-                        t.getTicketId(), t.getMatchId(), t.getSeatId(), t.getPrice(), t.getStatus());
+                System.out.printf("  %-12s %-10s %-12s %-8s %,15.0f %-10s%n",
+                        t.getTicketId(), t.getMatchId(), t.getSeatId(),
+                        t.getSeatType(), t.getPrice(), t.getStatus());
             }
         } else if (choice == 2) {
-            System.out.print("  Enter Ticket ID to confirm: ");
-            String id = sc.nextLine().trim();
-            Ticket target = tickets.stream().filter(t -> t.getTicketId().equalsIgnoreCase(id)).findFirst().orElse(null);
-            if (target != null) {
-                target.setStatus(model.ticket.TicketStatus.SOLD);
-                ticketRepo.removeTicket(id);
-                ticketRepo.addTicket(target);
-                System.out.println("[OK] Booking confirmed.");
+            // Hien danh sach PENDING transactions
+            List<Transaction> pending = bookingCtrl.getPendingTransactions();
+            if (pending.isEmpty()) {
+                System.out.println("  [INFO] Khong co giao dich nao dang PENDING.");
+                return;
+            }
+            System.out.println("\n  ----- Giao dich PENDING -----");
+            System.out.printf("  %-12s %-12s %-12s %15s %-10s%n",
+                    "Trans ID", "Ticket ID", "Fan ID", "So tien (VND)", "Phuong thuc");
+            System.out.println("  " + "-".repeat(70));
+            for (Transaction t : pending) {
+                System.out.printf("  %-12s %-12s %-12s %,15.0f %-10s%n",
+                        t.getTransactionId(), t.getTicketId(), t.getFanId(),
+                        t.getAmount(), t.getPaymentMethod());
+            }
+            System.out.print("\n  Nhap Transaction ID de xac nhan (0 de quay lai): ");
+            String transId = sc.nextLine().trim();
+            if (transId.equals("0") || transId.isEmpty()) return;
+            boolean ok = bookingCtrl.staffConfirmTransaction(transId);
+            if (ok) {
+                System.out.println("[OK] Giao dich " + transId + " da xac nhan -> SUCCESS.");
             } else {
-                System.out.println("[ERROR] Ticket not found.");
+                System.out.println("[ERROR] Khong the xac nhan. Kiem tra lai Transaction ID.");
             }
         } else if (choice == 3) {
-            System.out.print("  Enter Ticket ID to cancel/void: ");
+            System.out.print("  Nhap Ticket ID can huy: ");
             String id = sc.nextLine().trim();
             Ticket target = tickets.stream().filter(t -> t.getTicketId().equalsIgnoreCase(id)).findFirst().orElse(null);
             if (target != null) {
@@ -1135,7 +1186,7 @@ public class MainView {
                 ticketRepo.removeTicket(id);
                 ticketRepo.addTicket(target);
                 stadiumCtrl.releaseSeat(target.getSeatId());
-                System.out.println("[OK] Booking voided and seat released.");
+                System.out.println("[OK] Booking da bi huy va ghe da duoc giai phong.");
             } else {
                 System.out.println("[ERROR] Ticket not found.");
             }
