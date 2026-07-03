@@ -63,8 +63,8 @@ public class FanController {
             return null;
         }
         // Email: basic format validation
-        if (email == null || !Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", email)) {
-            System.out.println("[ERROR] Invalid email format.");
+        if (email == null || !Pattern.matches("(?i)^[A-Za-z0-9._%+-]+@gmail\\.com$", email)) {
+            System.out.println("[ERROR] Invalid email format. Must end with @gmail.com");
             return null;
         }
         if (isAdminOrStaffEmail(email)) {

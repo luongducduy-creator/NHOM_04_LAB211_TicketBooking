@@ -254,8 +254,8 @@ public class MainView {
         while (true) {
             System.out.print("  Email      : ");
             email = sc.nextLine().trim();
-            if (!java.util.regex.Pattern.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", email)) {
-                System.out.println("[ERROR] Invalid email format.");
+            if (!java.util.regex.Pattern.matches("(?i)^[A-Za-z0-9._%+-]+@gmail\\.com$", email)) {
+                System.out.println("[ERROR] Invalid email format. Must end with @gmail.com");
                 continue;
             }
             // Check duplicate via controller without lambda
@@ -699,12 +699,92 @@ public class MainView {
 
     private void staffSellTicketFlow() {
         System.out.println("\n  ===== BOOK TICKET FOR FAN =====");
-        System.out.print("  Enter Fan ID: ");
+        System.out.print("  Enter Fan ID (or leave empty for guest/new registration): ");
         String fanId = sc.nextLine().trim();
-        Fan fan = fanCtrl.findById(fanId);
+        Fan fan = null;
+        if (!fanId.isEmpty()) {
+            fan = fanCtrl.findById(fanId);
+        }
         if (fan == null) {
-            System.out.println("[ERROR] Fan not found.");
-            return;
+            System.out.println("\n  Fan not found or empty ID.");
+            System.out.println("  1. Quick Guest Checkout (Auto-generate customer info)");
+            System.out.println("  2. Register a new Fan on the spot");
+            System.out.println("  0. Cancel");
+            System.out.print("  Choose: ");
+            int option = readInt();
+            if (option == 1) {
+                // Auto generate guest fan
+                String guestName = "Guest " + (System.currentTimeMillis() % 10000);
+                String guestEmail = "guest" + System.currentTimeMillis() + "@gmail.com";
+                String dummyPhone = String.format("09%08d", new java.util.Random().nextInt(100000000));
+                fan = fanCtrl.register(guestName, guestEmail, dummyPhone, 2000, "123456");
+                if (fan == null) {
+                    System.out.println("[ERROR] Failed to auto-generate guest.");
+                    return;
+                }
+                System.out.println("[OK] Generated Guest Account: ID = " + fan.getId() + ", Name = " + fan.getName());
+            } else if (option == 2) {
+                // Register normal fan
+                System.out.println("\n  --- QUICK FAN REGISTRATION ---");
+                System.out.print("  Full name  : ");
+                String name = sc.nextLine().trim();
+                if (name.isEmpty() || !java.util.regex.Pattern.matches("^[A-Za-z0-9].*", name)) {
+                    System.out.println("[ERROR] Invalid name.");
+                    return;
+                }
+                String email;
+                while (true) {
+                    System.out.print("  Email      : ");
+                    email = sc.nextLine().trim();
+                    if (!java.util.regex.Pattern.matches("(?i)^[A-Za-z0-9._%+-]+@gmail\\.com$", email)) {
+                        System.out.println("[ERROR] Email must end with @gmail.com");
+                        continue;
+                    }
+                    if (fanCtrl.isAdminOrStaffEmail(email)) {
+                        System.out.println("[ERROR] Admin/Staff emails not allowed.");
+                        continue;
+                    }
+                    boolean duplicate = false;
+                    for (Fan f : fanCtrl.getAllFans()) {
+                        if (f.getEmail().equalsIgnoreCase(email)) {
+                            duplicate = true;
+                            break;
+                        }
+                    }
+                    if (duplicate) {
+                        System.out.println("[ERROR] Email already registered.");
+                        continue;
+                    }
+                    break;
+                }
+                System.out.print("  Phone      : ");
+                String phone = sc.nextLine().trim();
+                if (!java.util.regex.Pattern.matches("\\d{10}", phone)) {
+                    System.out.println("[ERROR] Phone must be exactly 10 digits.");
+                    return;
+                }
+                System.out.print("  Birth year : ");
+                int year = readInt();
+                if (year < 1930 || year > 2026) {
+                    System.out.println("[ERROR] Birth year must be between 1930 and 2026.");
+                    return;
+                }
+                System.out.print("  Password (default '123456'): ");
+                String pass = sc.nextLine().trim();
+                if (pass.isEmpty()) pass = "123456";
+                else if (pass.length() < 4) {
+                    System.out.println("[ERROR] Password must be at least 4 characters.");
+                    return;
+                }
+                fan = fanCtrl.register(name, email, phone, year, pass);
+                if (fan == null) {
+                    System.out.println("[ERROR] Registration failed.");
+                    return;
+                }
+            } else {
+                System.out.println("Cancelled.");
+                return;
+            }
         }
         bookingView.startBookingFlow(fan, true);
     }

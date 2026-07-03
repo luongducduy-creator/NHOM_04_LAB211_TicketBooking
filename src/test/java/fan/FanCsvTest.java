@@ -17,7 +17,7 @@ public class FanCsvTest {
                 2004);
 
         assertEquals(
-                "F001,Duy,duy@gmail.com,0912345678,2004,123456",
+                "\"F001\",\"Duy\",\"duy@gmail.com\",\"0912345678\",\"2004\",\"123456\"",
                 fan.toCSV());
     }
 

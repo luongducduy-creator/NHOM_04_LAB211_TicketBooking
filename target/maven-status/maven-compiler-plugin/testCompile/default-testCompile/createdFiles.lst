@@ -1,0 +1,10 @@
+fan\FanRepositoryTest.class
+core\CsvRepositoryTest.class
+core\TransactionRepositoryTest.class
+core\BaseEntityTest.class
+ticket\TicketRepositoryTest.class
+fan\FanCsvTest.class
+core\MatchCsvTest.class
+ticket\TicketCsvTest.class
+seat\SeatCsvTest.class
+seat\SeatRepositoryPerformanceTest.class

@@ -28,7 +28,7 @@ public class FanRepository {
             System.out.println("Loi ghi file");
         }
         // Keep cleaned copy up‑to‑date
-        saveCleanedCopy();
+
     }
 
     public ArrayList<Fan> getAllFans() {
@@ -99,8 +99,6 @@ public class FanRepository {
         } catch (Exception e) {
             System.out.println("Loi update");
         }
-        // Keep cleaned copy up‑to‑date after update
-        saveCleanedCopy();
     }
 
     public void deleteFan(String id) {
@@ -120,8 +118,7 @@ public class FanRepository {
         } catch (Exception e) {
             System.out.println("Loi delete");
         }
-        // Keep cleaned copy up‑to‑date after deletion
-        saveCleanedCopy();
+
     }
 
     public ArrayList<Fan> findByCondition(Predicate<Fan> condition) {
