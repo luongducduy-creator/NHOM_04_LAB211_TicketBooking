@@ -99,10 +99,21 @@ public class BookingController {
             return null;
         }
 
-        // 5. Create and persist Ticket
-        String ticketId = generateNextTicketId();
-        Ticket ticket   = new Ticket(ticketId, matchId, seatId, seatType, price, match.getDate(), TicketStatus.SOLD);
-        ticketRepo.addTicket(ticket);
+        // 5. Tái sử dụng vé AVAILABLE nếu đã có trong tickets.csv, ngược lại tạo mới
+        Ticket existingTicket = ticketRepo.findAvailableTicket(matchId, seatId);
+        String ticketId;
+        if (existingTicket != null) {
+            // Tái sử dụng: chỉ đổi status AVAILABLE → SOLD
+            existingTicket.setStatus(TicketStatus.SOLD);
+            ticketRepo.updateTicket(existingTicket);
+            ticketId = existingTicket.getTicketId();
+            System.out.println("[INFO] Reusing existing ticket: " + ticketId);
+        } else {
+            // Không có sẵn → tạo ticket mới
+            ticketId = generateNextTicketId();
+            Ticket newTicket = new Ticket(ticketId, matchId, seatId, seatType, price, match.getDate(), TicketStatus.SOLD);
+            ticketRepo.addTicket(newTicket);
+        }
 
         // 6. Create and persist Transaction
         String transId        = transactionRepo.generateNextId();
@@ -118,6 +129,7 @@ public class BookingController {
         System.out.println("[OK] Booking successful! Ticket ID: " + ticketId + "  |  Transaction: " + transId + "  |  Invoice: " + invId);
         return transaction;
     }
+
 
     // ─────────────────────────────────────────────
     //  CANCEL BOOKING

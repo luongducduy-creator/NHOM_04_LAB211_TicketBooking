@@ -184,4 +184,43 @@ public class StadiumController {
     private static int rowOrder(String row) {
         try { return Integer.parseInt(row); } catch (Exception e) { return 0; }
     }
+
+    /**
+     * Đồng bộ seats.csv theo tickets.csv:
+     * - Ghế nào có ít nhất 1 ticket SOLD → đánh dấu SOLD trong seats.csv
+     * - Ghế nào không có ticket SOLD nào  → đánh dấu AVAILABLE
+     *
+     * Gọi phương thức này khi khởi động ứng dụng (sau khi load tickets).
+     */
+    public void syncSeatStatusFromTickets(List<model.ticket.Ticket> tickets) {
+        // Tập hợp seatId đang bị chiếm (SOLD)
+        java.util.Set<String> soldSeatIds = new java.util.HashSet<>();
+        for (model.ticket.Ticket t : tickets) {
+            if (t.getStatus() == model.ticket.TicketStatus.SOLD) {
+                soldSeatIds.add(t.getSeatId().toUpperCase());
+            }
+        }
+
+        try {
+            List<Seat> seats = seatRepo.findAll();
+            boolean changed = false;
+            for (Seat s : seats) {
+                boolean shouldBeSold = soldSeatIds.contains(s.getSeatId().toUpperCase());
+                String currentStatus = s.getStatus() == null ? "" : s.getStatus().toUpperCase();
+                if (shouldBeSold && !currentStatus.equals("SOLD")) {
+                    s.setStatus("SOLD");
+                    changed = true;
+                } else if (!shouldBeSold && currentStatus.equals("SOLD")) {
+                    s.setStatus("AVAILABLE");
+                    changed = true;
+                }
+            }
+            if (changed) {
+                seatRepo.saveAll(seats);
+                System.out.println("[INFO] seats.csv đã được đồng bộ theo tickets.csv.");
+            }
+        } catch (IOException e) {
+            System.out.println("[ERROR] Không thể đồng bộ seats.csv: " + e.getMessage());
+        }
+    }
 }

@@ -25,6 +25,9 @@ public class Main {
         FanController     fanCtrl     = new FanController(bookingCtrl.getTransactionRepo(),
                                                           bookingCtrl.getTicketRepo());
 
+        // ── Đồng bộ seats.csv theo tickets.csv khi khởi động ──
+        stadiumCtrl.syncSeatStatusFromTickets(bookingCtrl.getTicketRepo().findAll());
+
         // ── View layer (MVC entry point) ──
         MainView mainView = new MainView(fanCtrl, stadiumCtrl, bookingCtrl, sc);
 

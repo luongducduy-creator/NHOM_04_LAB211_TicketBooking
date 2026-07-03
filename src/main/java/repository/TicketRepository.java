@@ -134,6 +134,29 @@ public class TicketRepository {
         return removed;
     }
 
+    // ✅ Tìm vé AVAILABLE cho cặp (matchId, seatId) – dùng để tái sử dụng thay vì tạo mới
+    public Ticket findAvailableTicket(String matchId, String seatId) {
+        for (Ticket t : tickets) {
+            if (t.getMatchId().equalsIgnoreCase(matchId)
+                    && t.getSeatId().equalsIgnoreCase(seatId)
+                    && t.getStatus() == TicketStatus.AVAILABLE) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    // ✅ Cập nhật vé đã tồn tại (thay thế theo ticketId)
+    public void updateTicket(Ticket updated) {
+        for (int i = 0; i < tickets.size(); i++) {
+            if (tickets.get(i).getTicketId().equalsIgnoreCase(updated.getTicketId())) {
+                tickets.set(i, updated);
+                break;
+            }
+        }
+        saveData();
+    }
+
     // ✅ Sinh ID vé tự động tăng
     public String generateNextTicketId() {
         int max = 0;
