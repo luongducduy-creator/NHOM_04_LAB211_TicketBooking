@@ -57,9 +57,8 @@ public class BookingController {
      *
      * @return the created Transaction, or null on failure
      */
-    public Transaction bookSeat(String fanId, String matchId, String seatId,
-                                Transaction.PaymentMethod paymentMethod) {
-
+    public synchronized Transaction bookSeat(String fanId, String matchId, String seatId,
+                                         Transaction.PaymentMethod paymentMethod) {
         // 1. Get seat
         Seat seat = stadiumCtrl.getSeatById(seatId);
         if (seat == null) {
