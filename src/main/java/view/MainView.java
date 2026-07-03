@@ -697,17 +697,26 @@ public class MainView {
     }
 
 
-    private void staffSellTicketFlow() {
-        System.out.println("\n  ===== BOOK TICKET FOR FAN =====");
-        System.out.print("  Enter Fan ID: ");
-        String fanId = sc.nextLine().trim();
-        Fan fan = fanCtrl.findById(fanId);
+   private void staffSellTicketFlow() {
+    System.out.println("\n  ===== BOOK TICKET =====");
+    System.out.print("  Enter Fan ID (leave blank for Guest): ");
+    String fanId = sc.nextLine().trim();
+
+    Fan fan = null;
+    if (fanId.isEmpty()) {
+        // Nếu để trống → tạo Fan giả cho Guest
+        fan = new Fan("GUEST", "Guest Customer", "guest@example.com", "0000000000", 0);
+    } else {
+        fan = fanCtrl.findById(fanId);
         if (fan == null) {
             System.out.println("[ERROR] Fan not found.");
             return;
         }
-        bookingView.startBookingFlow(fan, true);
     }
+
+    bookingView.startBookingFlow(fan, true);
+}
+
 
     private void staffVerifyTicketFlow() {
         System.out.println("\n  ===== VERIFY TICKET =====");

@@ -70,6 +70,9 @@ public class BookingController {
             System.out.println("[ERROR] Seat " + seatId + " is not available.");
             return null;
         }
+        if (fanId == null || fanId.isEmpty()) {
+            fanId = "GUEST";
+}
 
         // 2. Get match
         Match match = stadiumCtrl.getMatchById(matchId);
