@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="controller.SimulatorControllerTest" time="0.92" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="controller.SimulatorControllerTest" time="0.896" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot\bin"/>
-    <property name="sun.java.command" value="C:\Users\FPTSHOP\AppData\Local\Temp\surefire6230650577234558568\surefirebooter-20260719223422497_3.jar C:\Users\FPTSHOP\AppData\Local\Temp\surefire6230650577234558568 2026-07-19T22-34-22_359-jvmRun1 surefire-20260719223422497_1tmp surefire_0-20260719223422497_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\FPTSHOP\AppData\Local\Temp\surefire9004904964032391803\surefirebooter-20260719232008661_3.jar C:\Users\FPTSHOP\AppData\Local\Temp\surefire9004904964032391803 2026-07-19T23-20-08_487-jvmRun1 surefire-20260719232008661_1tmp surefire_0-20260719232008661_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="test" value="SimulatorControllerTest"/>
     <property name="surefire.test.class.path" value="D:\github\NHOM_04_LAB211_TicketBooking\target\test-classes;D:\github\NHOM_04_LAB211_TicketBooking\target\classes;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;C:\Users\FPTSHOP\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;"/>
@@ -31,7 +31,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\FPTSHOP\AppData\Local\Temp\surefire6230650577234558568\surefirebooter-20260719223422497_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\FPTSHOP\AppData\Local\Temp\surefire9004904964032391803\surefirebooter-20260719232008661_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.19+10"/>
@@ -46,7 +46,7 @@
     <property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
     <property name="java.io.tmpdir" value="C:\Users\FPTSHOP\AppData\Local\Temp\"/>
     <property name="java.version" value="17.0.19"/>
-    <property name="user.dir" value="C:\Users\FPTSHOP\AppData\Local\Temp\ticket-booking-test16406967311168770729"/>
+    <property name="user.dir" value="C:\Users\FPTSHOP\AppData\Local\Temp\ticket-booking-test6546116914924870135"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="failIfNoTests" value="false"/>
@@ -60,18 +60,18 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="synchronizedMechanismShouldAllowOnlyOneSuccessfulBookingForSameSeat" classname="controller.SimulatorControllerTest" time="0.135">
+  <testcase name="synchronizedMechanismShouldAllowOnlyOneSuccessfulBookingForSameSeat" classname="controller.SimulatorControllerTest" time="0.117">
     <system-out><![CDATA[[OK] Booking successful! Ticket ID: T1  |  Transaction: TR1  |  Invoice: INV1001
 [ERROR] Seat SEAT1 is not available.
 [ERROR] Seat SEAT1 is not available.
 [ERROR] Seat SEAT1 is not available.
 ]]></system-out>
   </testcase>
-  <testcase name="fileLockMechanismShouldAllowOnlyOneSuccessfulBookingForSameSeat" classname="controller.SimulatorControllerTest" time="0.014">
+  <testcase name="fileLockMechanismShouldAllowOnlyOneSuccessfulBookingForSameSeat" classname="controller.SimulatorControllerTest" time="0.015">
     <system-out><![CDATA[[OK] Booking successful! Ticket ID: T1  |  Transaction: TR1  |  Invoice: INV1001
 ]]></system-out>
   </testcase>
-  <testcase name="optimisticMechanismShouldAllowOnlyOneSuccessfulBookingForSameSeat" classname="controller.SimulatorControllerTest" time="0.749">
+  <testcase name="optimisticMechanismShouldAllowOnlyOneSuccessfulBookingForSameSeat" classname="controller.SimulatorControllerTest" time="0.745">
     <system-out><![CDATA[[ERROR] Seat is no longer available (concurrency issue).
 [ERROR] Seat is no longer available (concurrency issue).
 [ERROR] Seat is no longer available (concurrency issue).

@@ -98,11 +98,16 @@ public class SimulatorController {
 
     private Transaction executeBooking(SyncMechanism mechanism, String fanId, String matchId, String seatId)
             throws Exception {
-        return switch (mechanism) {
-            case FILE_LOCK -> bookWithFileLock(fanId, matchId, seatId);
-            case OPTIMISTIC -> bookWithOptimisticRetry(fanId, matchId, seatId);
-            case SYNCHRONIZED -> bookWithSynchronizedLock(fanId, matchId, seatId);
-        };
+        switch (mechanism) {
+            case FILE_LOCK:
+                return bookWithFileLock(fanId, matchId, seatId);
+            case OPTIMISTIC:
+                return bookWithOptimisticRetry(fanId, matchId, seatId);
+            case SYNCHRONIZED:
+                return bookWithSynchronizedLock(fanId, matchId, seatId);
+            default:
+                throw new IllegalArgumentException("Unknown mechanism: " + mechanism);
+        }
     }
 
     private Transaction bookWithSynchronizedLock(String fanId, String matchId, String seatId) {
