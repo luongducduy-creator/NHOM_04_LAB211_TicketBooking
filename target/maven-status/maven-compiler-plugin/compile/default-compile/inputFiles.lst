@@ -1,6 +1,7 @@
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\app\Main.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\controller\BookingController.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\controller\FanController.java
+C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\controller\SimulatorController.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\controller\StadiumController.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\model\base\BaseEntity.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\model\fan\Fan.java
@@ -35,8 +36,10 @@ C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\utiliti
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\utilities\SeatDataGenerator.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\utils\ConsoleUtils.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\utils\InputUtils.java
+C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\utils\SeatStatusUpdater.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\utils\ValidationUtils.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\view\BookingView.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\view\MainView.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\view\ReportView.java
 C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\view\SeatMapView.java
+C:\Users\DUY\Documents\GitHub\NHOM_04_LAB211_TicketBooking\src\main\java\view\SimulatorView.java
