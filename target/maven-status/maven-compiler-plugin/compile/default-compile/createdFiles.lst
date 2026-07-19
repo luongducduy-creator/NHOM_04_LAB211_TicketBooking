@@ -7,8 +7,10 @@ app\Main.class
 model\seat\Seat.class
 test\SmokeTest.class
 model\match\MatchStatus.class
+controller\SimulatorController$SyncMechanism.class
 utils\SeatStatusUpdater.class
 repository\MatchRepository.class
+controller\SimulatorController$1.class
 repository\TicketRepository.class
 utilities\CsvSplitter.class
 model\notification\Notification.class

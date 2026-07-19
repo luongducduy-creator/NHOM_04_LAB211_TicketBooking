@@ -15,50 +15,55 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 /**
- * T5 – BookingController  (NO_LOCK strategy – single-thread)
+ * T5 – BookingController (NO_LOCK strategy – single-thread)
  * Handles: bookSeat, cancelBooking, getMyTransactions
  */
 public class BookingController {
 
-    private final TicketRepository      ticketRepo;
+    private final TicketRepository ticketRepo;
     private final TransactionRepository transactionRepo;
-    private final InvoiceRepository     invoiceRepo;
-    private final StadiumController     stadiumCtrl;
+    private final InvoiceRepository invoiceRepo;
+    private final StadiumController stadiumCtrl;
 
     public BookingController(StadiumController stadiumCtrl) {
         this(stadiumCtrl,
-             new TicketRepository(System.getProperty("user.dir") + "/data/tickets.csv"),
-             new TransactionRepository());
+                new TicketRepository(System.getProperty("user.dir") + "/data/tickets.csv"),
+                new TransactionRepository());
     }
 
     public BookingController(StadiumController stadiumCtrl,
-                             TicketRepository ticketRepo,
-                             TransactionRepository transactionRepo) {
-        this.ticketRepo      = ticketRepo;
+            TicketRepository ticketRepo,
+            TransactionRepository transactionRepo) {
+        this.ticketRepo = ticketRepo;
         this.transactionRepo = transactionRepo;
-        this.invoiceRepo     = new InvoiceRepository();
-        this.stadiumCtrl     = stadiumCtrl;
+        this.invoiceRepo = new InvoiceRepository();
+        this.stadiumCtrl = stadiumCtrl;
     }
 
-    public TicketRepository getTicketRepo() { return ticketRepo; }
-    public TransactionRepository getTransactionRepo() { return transactionRepo; }
+    public TicketRepository getTicketRepo() {
+        return ticketRepo;
+    }
+
+    public TransactionRepository getTransactionRepo() {
+        return transactionRepo;
+    }
 
     // ─────────────────────────────────────────────
-    //  BOOK A SEAT  (NO_LOCK baseline)
+    // BOOK A SEAT (NO_LOCK baseline)
     // ─────────────────────────────────────────────
     /**
      * Book a seat for a match.
      * Steps:
-     *   1. Verify seat exists and is AVAILABLE
-     *   2. Mark seat as SOLD
-     *   3. Determine ticket type and price from section
-     *   4. Create Ticket (SOLD) and persist
-     *   5. Create Transaction and persist
+     * 1. Verify seat exists and is AVAILABLE
+     * 2. Mark seat as SOLD
+     * 3. Determine ticket type and price from section
+     * 4. Create Ticket (SOLD) and persist
+     * 5. Create Transaction and persist
      *
      * @return the created Transaction, or null on failure
      */
-    public synchronized Transaction bookSeat(String fanId, String matchId, String seatId,
-                                         Transaction.PaymentMethod paymentMethod) {
+    public Transaction bookSeat(String fanId, String matchId, String seatId,
+            Transaction.PaymentMethod paymentMethod) {
         // 1. Get seat
         Seat seat = stadiumCtrl.getSeatById(seatId);
         if (seat == null) {
@@ -85,7 +90,8 @@ public class BookingController {
         // Check if ticket is already sold for this match
         List<Ticket> allTickets = ticketRepo.findAll();
         for (Ticket t : allTickets) {
-            if (t.getMatchId().equals(matchId) && t.getSeatId().equalsIgnoreCase(seatId) && t.getStatus() == TicketStatus.SOLD) {
+            if (t.getMatchId().equals(matchId) && t.getSeatId().equalsIgnoreCase(seatId)
+                    && t.getStatus() == TicketStatus.SOLD) {
                 System.out.println("[ERROR] Seat " + seatId + " is already booked for this match.");
                 return null;
             }
@@ -100,11 +106,11 @@ public class BookingController {
 
         // 5. Create and persist Ticket
         String ticketId = generateNextTicketId();
-        Ticket ticket   = new Ticket(ticketId, matchId, seatId, seatType, price, match.getDate(), TicketStatus.SOLD);
+        Ticket ticket = new Ticket(ticketId, matchId, seatId, seatType, price, match.getDate(), TicketStatus.SOLD);
         ticketRepo.addTicket(ticket);
 
         // 6. Create and persist Transaction
-        String transId        = transactionRepo.generateNextId();
+        String transId = transactionRepo.generateNextId();
         Transaction transaction = new Transaction(transId, ticketId, fanId, price, paymentMethod,
                 Transaction.Status.PENDING);
         transactionRepo.add(transaction);
@@ -114,12 +120,13 @@ public class BookingController {
         Invoice invoice = new Invoice(invId, ticketId, price, match.getDate());
         invoiceRepo.addInvoice(invoice);
 
-        System.out.println("[OK] Booking successful! Ticket ID: " + ticketId + "  |  Transaction: " + transId + "  |  Invoice: " + invId);
+        System.out.println("[OK] Booking successful! Ticket ID: " + ticketId + "  |  Transaction: " + transId
+                + "  |  Invoice: " + invId);
         return transaction;
     }
 
     // ─────────────────────────────────────────────
-    //  CANCEL BOOKING
+    // CANCEL BOOKING
     // ─────────────────────────────────────────────
     /**
      * Cancel a booking identified by transactionId.
@@ -151,7 +158,8 @@ public class BookingController {
         Ticket ticket = ticketRepo.findById(target.getTicketId());
         if (ticket != null) {
             ticket.setStatus(TicketStatus.CANCELLED);
-            // TicketRepository rewrites the whole file on next access – use removeTicket approach
+            // TicketRepository rewrites the whole file on next access – use removeTicket
+            // approach
             ticketRepo.removeTicket(ticket.getTicketId());
             Ticket cancelled = new Ticket(ticket.getTicketId(), ticket.getMatchId(),
                     ticket.getSeatId(), ticket.getSeatType(), ticket.getPrice(),
@@ -171,7 +179,7 @@ public class BookingController {
     }
 
     // ─────────────────────────────────────────────
-    //  QUERIES
+    // QUERIES
     // ─────────────────────────────────────────────
     public List<Transaction> getMyTransactions(String fanId) {
         return transactionRepo.findByFanId(fanId);
@@ -182,14 +190,14 @@ public class BookingController {
     }
 
     // ─────────────────────────────────────────────
-    //  HELPERS
+    // HELPERS
     // ─────────────────────────────────────────────
     private String generateNextTicketId() {
         return ticketRepo.generateNextTicketId();
     }
 
     // ─────────────────────────────────────────────
-    //  STAFF OPERATIONS
+    // STAFF OPERATIONS
     // ─────────────────────────────────────────────
     /**
      * Retrieve all pending transactions for staff review.
@@ -254,9 +262,5 @@ public class BookingController {
             System.out.println("[INFO] Auto-confirmed pending transactions older than 3 days.");
         }
     }
-
-
-
-    
 
 }

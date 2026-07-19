@@ -11,6 +11,8 @@ import repository.StadiumRepository;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * T5 – StadiumController
@@ -20,23 +22,28 @@ public class StadiumController {
 
     private final StadiumRepository stadiumRepo;
     private final SectionRepository sectionRepo;
-    private final SeatRepository    seatRepo;
-    private final MatchRepository   matchRepo;
+    private final SeatRepository seatRepo;
+    private final MatchRepository matchRepo;
+    private final Map<String, String> seatStatusCache;
 
     public StadiumController() {
         this.stadiumRepo = new StadiumRepository();
         this.sectionRepo = new SectionRepository();
-        this.seatRepo    = new SeatRepository(System.getProperty("user.dir") + "/data/seats.csv");
-        this.matchRepo   = new MatchRepository();
+        this.seatRepo = new SeatRepository(System.getProperty("user.dir") + "/data/seats.csv");
+        this.matchRepo = new MatchRepository();
+        this.seatStatusCache = new ConcurrentHashMap<>();
         try {
             this.seatRepo.autoRenumberSeats();
+            for (Seat seat : this.seatRepo.findAll()) {
+                this.seatStatusCache.put(seat.getSeatId(), seat.getStatus());
+            }
         } catch (IOException e) {
             System.out.println("[ERROR] Failed to auto-renumber seats: " + e.getMessage());
         }
     }
 
     // ─────────────────────────────────────────────
-    //  STADIUMS
+    // STADIUMS
     // ─────────────────────────────────────────────
     public List<Stadium> getAllStadiums() {
         return stadiumRepo.findAll();
@@ -47,7 +54,7 @@ public class StadiumController {
     }
 
     // ─────────────────────────────────────────────
-    //  MATCHES
+    // MATCHES
     // ─────────────────────────────────────────────
     public List<Match> getAllMatches() {
         return matchRepo.findAll();
@@ -58,7 +65,7 @@ public class StadiumController {
     }
 
     // ─────────────────────────────────────────────
-    //  SECTIONS
+    // SECTIONS
     // ─────────────────────────────────────────────
     /**
      * Get all sections belonging to a stadium.
@@ -72,10 +79,11 @@ public class StadiumController {
     }
 
     // ─────────────────────────────────────────────
-    //  SEAT MAP
+    // SEAT MAP
     // ─────────────────────────────────────────────
     /**
-     * Build a seat map for a section: Map<rowLabel, List<Seat>> sorted by row+number.
+     * Build a seat map for a section: Map<rowLabel, List<Seat>> sorted by
+     * row+number.
      * This is the data model that SeatMapView renders as ASCII.
      */
     public Map<String, List<Seat>> buildSeatMap(String sectionId) {
@@ -99,7 +107,11 @@ public class StadiumController {
         // Sort seats within each row by seat number
         for (List<Seat> row : seatMap.values()) {
             row.sort(Comparator.comparingInt(s -> {
-                try { return Integer.parseInt(s.getNumber()); } catch (Exception e) { return 0; }
+                try {
+                    return Integer.parseInt(s.getNumber());
+                } catch (Exception e) {
+                    return 0;
+                }
             }));
         }
 
@@ -129,9 +141,16 @@ public class StadiumController {
      */
     public Seat getSeatById(String seatId) {
         try {
-            return seatRepo.findAll().stream()
-                    .filter(s -> s.getSeatId().equalsIgnoreCase(seatId))
-                    .findFirst().orElse(null);
+            for (Seat seat : seatRepo.findAll()) {
+                if (seat.getSeatId().equalsIgnoreCase(seatId)) {
+                    String cachedStatus = seatStatusCache.get(seatId);
+                    if (cachedStatus != null) {
+                        seat.setStatus(cachedStatus);
+                    }
+                    return seat;
+                }
+            }
+            return null;
         } catch (IOException e) {
             return null;
         }
@@ -141,28 +160,40 @@ public class StadiumController {
      * Mark seat as SOLD and persist.
      */
     public boolean markSeatBooked(String seatId) {
+        AtomicBoolean changed = new AtomicBoolean(false);
+        seatStatusCache.compute(seatId, (id, currentStatus) -> {
+            if (!"AVAILABLE".equalsIgnoreCase(currentStatus)) {
+                return currentStatus;
+            }
+            changed.set(true);
+            return "SOLD";
+        });
+
+        if (!changed.get()) {
+            return false;
+        }
+
         try {
             List<Seat> seats = seatRepo.findAll();
             for (Seat s : seats) {
                 if (s.getSeatId().equalsIgnoreCase(seatId)) {
-                    if (!"AVAILABLE".equalsIgnoreCase(s.getStatus())) {
-                        return false; // Already taken
-                    }
-                    s.setStatus("SOLD");
-                    seatRepo.saveAll(seats);
-                    return true;
+                    s.setStatus(seatStatusCache.getOrDefault(seatId, s.getStatus()));
+                    break;
                 }
             }
+            seatRepo.saveAll(seats);
+            return true;
         } catch (IOException e) {
             System.out.println("[ERROR] Cannot update seat: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 
     /**
      * Mark seat as AVAILABLE again (for cancellation).
      */
     public boolean releaseSeat(String seatId) {
+        seatStatusCache.put(seatId, "AVAILABLE");
         try {
             List<Seat> seats = seatRepo.findAll();
             for (Seat s : seats) {
@@ -179,9 +210,13 @@ public class StadiumController {
     }
 
     // ─────────────────────────────────────────────
-    //  HELPERS
+    // HELPERS
     // ─────────────────────────────────────────────
     private static int rowOrder(String row) {
-        try { return Integer.parseInt(row); } catch (Exception e) { return 0; }
+        try {
+            return Integer.parseInt(row);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }

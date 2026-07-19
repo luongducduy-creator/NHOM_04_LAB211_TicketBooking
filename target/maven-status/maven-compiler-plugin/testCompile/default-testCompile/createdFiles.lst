@@ -8,3 +8,4 @@ core\MatchCsvTest.class
 ticket\TicketCsvTest.class
 seat\SeatCsvTest.class
 seat\SeatRepositoryPerformanceTest.class
+controller\SimulatorControllerTest.class

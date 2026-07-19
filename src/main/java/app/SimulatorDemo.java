@@ -6,9 +6,11 @@ import controller.BookingController;
 import view.SimulatorView;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
- * Demo class to run the concurrent seat‑booking simulation and display the result
+ * Demo class to run the concurrent seat‑booking simulation and display the
+ * result
  * using {@link SimulatorView}. This class is ONLY for demonstration / testing –
  * it does NOT alter any existing application logic.
  */
@@ -22,13 +24,23 @@ public class SimulatorDemo {
         SimulatorController simulator = new SimulatorController(bookingCtrl);
 
         // 3. Prepare sample data – make sure these IDs exist in the CSV files
-        List<String> fanIds   = List.of("FAN50001", "FAN50002", "FAN50003");
-        String matchId        = "M1"; // a match present in matches.csv
-        List<String> seatIds  = List.of("SEAT22", "SEAT34", "SEAT42"); // available seats
+        List<String> fanIds = List.of("FAN50001", "FAN50002", "FAN50003");
+        String matchId = "M1"; // a match present in matches.csv
+        List<String> seatIds = List.of("SEAT22", "SEAT34", "SEAT42"); // available seats
         int threads = fanIds.size(); // one thread per fan
 
+        SimulatorController.SyncMechanism mechanism = SimulatorController.SyncMechanism.SYNCHRONIZED;
+        if (args != null && args.length > 0) {
+            String requested = args[0].toUpperCase(Locale.ROOT);
+            try {
+                mechanism = SimulatorController.SyncMechanism.valueOf(requested);
+            } catch (IllegalArgumentException ignored) {
+                System.out.println("Unknown mechanism: " + args[0] + ". Using SYNCHRONIZED.");
+            }
+        }
+
         // 4. Run the simulation (CountDownLatch + ExecutorService inside)
-        var results = simulator.runSimulation(fanIds, matchId, seatIds, threads);
+        var results = simulator.runSimulation(fanIds, matchId, seatIds, threads, mechanism);
 
         // 5. Display the ASCII table using SimulatorView
         new SimulatorView().display(results);
