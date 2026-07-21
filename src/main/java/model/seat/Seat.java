@@ -15,10 +15,13 @@ public class Seat {
         this.status = status;
     }
 
-    // Parse CSV line -> Seat
+    // Parse CSV line -> Seat (trả null nếu dòng không hợp lệ hoặc là header)
     public static Seat fromCsvLine(String line) {
+        if (line == null || line.isBlank()) return null;
         String[] parts = line.split(",");
-        return new Seat(parts[0], parts[1], parts[2], parts[3], parts[4]);
+        if (parts.length < 5) return null;
+        if (parts[0].trim().equalsIgnoreCase("seatId")) return null; // skip header
+        return new Seat(parts[0].trim(), parts[1].trim(), parts[2].trim(), parts[3].trim(), parts[4].trim());
     }
 
     // Serialize Seat -> CSV line

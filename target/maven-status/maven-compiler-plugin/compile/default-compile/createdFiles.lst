@@ -2,6 +2,7 @@ model\fan\Fan.class
 view\SimulatorView.class
 view\BookingView.class
 model\ticket\Ticket.class
+test\StressTestDemo.class
 utilities\FanIdNormalizer.class
 app\Main.class
 model\seat\Seat.class
