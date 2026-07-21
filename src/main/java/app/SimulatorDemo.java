@@ -73,22 +73,22 @@ public class SimulatorDemo {
         };
 
         System.out.println("\n╔═══════════════════════════════════════════════════════════╗");
-        System.out.println("║  CONCURRENT BOOKING — NHIỀU FAN TRANH 1 GHẾ (x3 cơ chế) ║");
+        System.out.println("║  CONCURRENT BOOKING — MULTIPLE FANS COMPETE FOR ONE SEAT  ║");
         System.out.println("╚═══════════════════════════════════════════════════════════╝");
-        System.out.println("  Kịch bản: " + FANS_PER_SEAT + " fan cùng đặt 1 ghế — chỉ 1 người thắng.\n");
+        System.out.println("  Scenario: " + FANS_PER_SEAT + " fans book the same seat — only 1 wins.\n");
 
         for (int i = 0; i < MECHANISMS; i++) {
             SyncMechanism mechanism = mechanisms[i];
             String contestedSeat = freshSeats.get(i).getSeatId();
             List<String> fanIds  = List.of(fanGroups[i]);
 
-            // *** TẤT CẢ fan trong nhóm cùng tranh MỘT ghế ***
+            // All fans in the group compete for the SAME seat
             List<String> seatIds = Collections.nCopies(FANS_PER_SEAT, contestedSeat);
 
-            System.out.println("▶ Cơ chế    : " + mechanism);
-            System.out.println("  Fans      : " + fanIds);
-            System.out.println("  Ghế tranh : " + contestedSeat
-                    + "  (" + FANS_PER_SEAT + " fan cùng đặt ghế này)");
+            System.out.println("Mechanism   : " + mechanism);
+            System.out.println("Fans        : " + fanIds);
+            System.out.println("Contested   : " + contestedSeat
+                    + "  (" + FANS_PER_SEAT + " fans racing for this seat)");
 
             long startMs = System.currentTimeMillis();
             List<BookingResult> results = simulator.runSimulation(
