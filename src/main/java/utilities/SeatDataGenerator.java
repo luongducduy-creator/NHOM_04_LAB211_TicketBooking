@@ -36,12 +36,12 @@ public class SeatDataGenerator {
         int seatCounter = 1;
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(seatsFile))) {
-            bw.write("seatId,sectionId,row,number,status");
+            bw.write("seatId,sectionId,row,number,status,version");
             bw.newLine();
             for (String sectionId : sectionIds) {
                 for (int row = 1; row <= ROWS_PER_SECTION; row++) {
                     for (int num = 1; num <= SEATS_PER_ROW; num++) {
-                        bw.write("SEAT" + seatCounter + "," + sectionId + "," + row + "," + num + ",AVAILABLE");
+                        bw.write("SEAT" + seatCounter + "," + sectionId + "," + row + "," + num + ",AVAILABLE,0");
                         bw.newLine();
                         seatCounter++;
                     }

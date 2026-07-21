@@ -3,6 +3,7 @@ package view;
 import controller.SimulatorController.BookingResult;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SimulatorView {
 
@@ -82,6 +83,32 @@ public class SimulatorView {
         sb.append("=====================================================================\n\n");
 
         System.out.print(sb.toString());
+    }
+
+    /**
+     * Simple Week 7 comparison table: several fans compete for the same seat.
+     */
+    public void displayWeek7Comparison(Map<String, List<BookingResult>> resultsByMechanism) {
+        String line = "+---------------+----------+------------+----------+----------+-----------------------+";
+        String format = "| %-13s | %8s | %10s | %8s | %8s | %-21s |%n";
+
+        System.out.println();
+        System.out.println("TINH HUONG: NHIEU FAN CUNG DAT MOT GHE SEAT1");
+        System.out.println(line);
+        System.out.printf(format, "CO CHE", "SO FAN", "THANH CONG", "THAT BAI", "TY LE", "KET LUAN");
+        System.out.println(line);
+
+        for (Map.Entry<String, List<BookingResult>> entry : resultsByMechanism.entrySet()) {
+            List<BookingResult> results = entry.getValue();
+            long success = results.stream().filter(BookingResult::success).count();
+            long failed = results.size() - success;
+            double successRate = results.isEmpty() ? 0.0 : success * 100.0 / results.size();
+            String conclusion = success == 1 ? "KHONG TRUNG GHE" : "CO DOUBLE BOOKING";
+            System.out.printf(format, entry.getKey(), results.size(), success, failed,
+                    String.format("%.1f%%", successRate), conclusion);
+        }
+        System.out.println(line);
+        System.out.println("Mong doi: moi co che chi co 1 fan dat ghe thanh cong.");
     }
 
     public static void main(String[] args) {

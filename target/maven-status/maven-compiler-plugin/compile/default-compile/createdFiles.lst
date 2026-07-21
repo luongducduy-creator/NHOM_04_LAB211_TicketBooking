@@ -30,6 +30,7 @@ model\seat\SeatType.class
 model\invoice\Invoice.class
 utilities\CsvCleaner.class
 model\Stadium.class
+repository\SeatRepository$OptimisticUpdateResult.class
 repository\CsvRepository.class
 model\seat\Section.class
 app\SimulatorDemo.class

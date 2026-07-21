@@ -9,10 +9,12 @@ import model.transaction.Transaction;
 import repository.TicketRepository;
 import repository.TransactionRepository;
 import repository.InvoiceRepository;
+import repository.SeatRepository;
 import model.invoice.Invoice;
 
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.concurrent.Callable;
 
 /**
  * T5 – BookingController (NO_LOCK strategy – single-thread)
@@ -34,9 +36,16 @@ public class BookingController {
     public BookingController(StadiumController stadiumCtrl,
             TicketRepository ticketRepo,
             TransactionRepository transactionRepo) {
+        this(stadiumCtrl, ticketRepo, transactionRepo, new InvoiceRepository());
+    }
+
+    public BookingController(StadiumController stadiumCtrl,
+            TicketRepository ticketRepo,
+            TransactionRepository transactionRepo,
+            InvoiceRepository invoiceRepo) {
         this.ticketRepo = ticketRepo;
         this.transactionRepo = transactionRepo;
-        this.invoiceRepo = new InvoiceRepository();
+        this.invoiceRepo = invoiceRepo;
         this.stadiumCtrl = stadiumCtrl;
     }
 
@@ -64,6 +73,16 @@ public class BookingController {
      */
     public Transaction bookSeat(String fanId, String matchId, String seatId,
             Transaction.PaymentMethod paymentMethod) {
+        return bookSeatInternal(fanId, matchId, seatId, paymentMethod, null);
+    }
+
+    public Transaction bookSeatOptimistic(String fanId, String matchId, String seatId,
+            Transaction.PaymentMethod paymentMethod, int expectedVersion) {
+        return bookSeatInternal(fanId, matchId, seatId, paymentMethod, expectedVersion);
+    }
+
+    private Transaction bookSeatInternal(String fanId, String matchId, String seatId,
+            Transaction.PaymentMethod paymentMethod, Integer expectedVersion) {
         // 1. Get seat
         Seat seat = stadiumCtrl.getSeatById(seatId);
         if (seat == null) {
@@ -98,31 +117,61 @@ public class BookingController {
         }
 
         // 4. Mark seat as SOLD (NO_LOCK – single-thread safe)
-        boolean marked = stadiumCtrl.markSeatBooked(seatId);
+        boolean marked;
+        if (expectedVersion == null) {
+            marked = stadiumCtrl.markSeatBooked(seatId);
+        } else {
+            SeatRepository.OptimisticUpdateResult updateResult =
+                    stadiumCtrl.markSeatBookedOptimistic(seatId, expectedVersion);
+            marked = updateResult == SeatRepository.OptimisticUpdateResult.SUCCESS;
+        }
         if (!marked) {
             System.out.println("[ERROR] Seat is no longer available (concurrency issue).");
             return null;
         }
 
         // 5. Create and persist Ticket
-        String ticketId = generateNextTicketId();
-        Ticket ticket = new Ticket(ticketId, matchId, seatId, seatType, price, match.getDate(), TicketStatus.SOLD);
-        ticketRepo.addTicket(ticket);
+        String ticketId;
+        synchronized (ticketRepo) {
+            ticketId = generateNextTicketId();
+            Ticket ticket = new Ticket(ticketId, matchId, seatId, seatType,
+                    price, match.getDate(), TicketStatus.SOLD);
+            ticketRepo.addTicket(ticket);
+        }
 
         // 6. Create and persist Transaction
-        String transId = transactionRepo.generateNextId();
-        Transaction transaction = new Transaction(transId, ticketId, fanId, price, paymentMethod,
-                Transaction.Status.PENDING);
-        transactionRepo.add(transaction);
+        String transId;
+        Transaction transaction;
+        synchronized (transactionRepo) {
+            transId = transactionRepo.generateNextId();
+            transaction = new Transaction(transId, ticketId, fanId, price, paymentMethod,
+                    Transaction.Status.PENDING);
+            transactionRepo.add(transaction);
+        }
         // Auto-confirm any pending transactions older than 3 days
         autoConfirmPendingTransactions();
-        String invId = invoiceRepo.generateNextInvoiceId();
-        Invoice invoice = new Invoice(invId, ticketId, price, match.getDate());
-        invoiceRepo.addInvoice(invoice);
+        String invId;
+        synchronized (invoiceRepo) {
+            invId = invoiceRepo.generateNextInvoiceId();
+            Invoice invoice = new Invoice(invId, ticketId, price, match.getDate());
+            invoiceRepo.addInvoice(invoice);
+        }
 
         System.out.println("[OK] Booking successful! Ticket ID: " + ticketId + "  |  Transaction: " + transId
                 + "  |  Invoice: " + invId);
         return transaction;
+    }
+
+    public Seat getSeatSnapshot(String seatId) {
+        return stadiumCtrl.getSeatById(seatId);
+    }
+
+    public <T> T withSynchronizedBooking(Callable<T> bookingAction) throws Exception {
+        return stadiumCtrl.withSynchronizedBooking(bookingAction);
+    }
+
+    public <T> T withFileLockedBooking(Callable<T> bookingAction) throws Exception {
+        return stadiumCtrl.withFileLockedBooking(bookingAction);
     }
 
     // ─────────────────────────────────────────────

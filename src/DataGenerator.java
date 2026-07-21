@@ -57,7 +57,7 @@ public class DataGenerator {
         // Each stadium has 4 sections; enforce max 1000 seats per section
         int maxSeatsPerSection = Math.min(1000, seatsPerStadium / 4);
         try (PrintWriter pw = new PrintWriter("data/seats.csv")) {
-            pw.println("seatId,sectionId,row,number,status");
+            pw.println("seatId,sectionId,row,number,status,version");
             int seatId = 1;
             for (int s = 1; s <= stadiumCount; s++) {
                 // Determine VIP section for this stadium (randomly one of four)
@@ -77,7 +77,7 @@ public class DataGenerator {
                         int columnsPerRow = 20;
                         int row = (i - 1) / columnsPerRow + 1;
                         int number = (i - 1) % columnsPerRow + 1;
-                        pw.printf("SEAT%d,SEC%d,%d,%d,AVAILABLE%n", seatId++, sectionId, row, number);
+                        pw.printf("SEAT%d,SEC%d,%d,%d,AVAILABLE,0%n", seatId++, sectionId, row, number);
                     }
                 }
             }
