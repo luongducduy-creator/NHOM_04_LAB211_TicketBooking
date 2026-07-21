@@ -9,7 +9,11 @@ public class InvoiceRepository {
     private final String filePath;
 
     public InvoiceRepository() {
-        this.filePath = System.getProperty("user.dir") + "/data/invoices.csv";
+        this(System.getProperty("user.dir") + "/data/invoices.csv");
+    }
+
+    public InvoiceRepository(String filePath) {
+        this.filePath = filePath;
         initFile();
     }
 

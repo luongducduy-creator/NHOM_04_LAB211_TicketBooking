@@ -1,12 +1,8 @@
 package controller;
 
 import model.transaction.Transaction;
+import model.seat.Seat;
 
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -29,11 +25,9 @@ public class SimulatorController {
     }
 
     private final BookingController bookingController;
-    private final Path lockPath;
 
     public SimulatorController(BookingController bookingController) {
         this.bookingController = bookingController;
-        this.lockPath = Path.of(System.getProperty("user.dir"), "data", "booking.lock");
     }
 
     /**
@@ -111,31 +105,39 @@ public class SimulatorController {
     }
 
     private Transaction bookWithSynchronizedLock(String fanId, String matchId, String seatId) {
-        synchronized (bookingController) {
-            return bookingController.bookSeat(fanId, matchId, seatId, Transaction.PaymentMethod.CASH);
+        try {
+            return bookingController.withSynchronizedBooking(
+                    () -> bookingController.bookSeat(fanId, matchId, seatId,
+                            Transaction.PaymentMethod.CASH));
+        } catch (Exception e) {
+            throw new IllegalStateException("Synchronized booking failed", e);
         }
     }
 
     private Transaction bookWithFileLock(String fanId, String matchId, String seatId) throws Exception {
-        Files.createDirectories(lockPath.getParent());
-        try (RandomAccessFile randomAccessFile = new RandomAccessFile(lockPath.toFile(), "rw")) {
-            try (FileChannel channel = randomAccessFile.getChannel()) {
-                FileLock fileLock = channel.lock();
-                try {
-                    return bookingController.bookSeat(fanId, matchId, seatId, Transaction.PaymentMethod.CASH);
-                } finally {
-                    fileLock.release();
-                }
-            }
-        }
+        return bookingController.withFileLockedBooking(
+                () -> bookingController.bookSeat(fanId, matchId, seatId,
+                        Transaction.PaymentMethod.CASH));
     }
 
     private Transaction bookWithOptimisticRetry(String fanId, String matchId, String seatId) throws Exception {
         int maxAttempts = 8;
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-            Transaction tx = bookingController.bookSeat(fanId, matchId, seatId, Transaction.PaymentMethod.CASH);
+            Seat snapshot = bookingController.getSeatSnapshot(seatId);
+            if (snapshot == null || !"AVAILABLE".equalsIgnoreCase(snapshot.getStatus())) {
+                return null;
+            }
+
+            Transaction tx = bookingController.bookSeatOptimistic(
+                    fanId, matchId, seatId, Transaction.PaymentMethod.CASH,
+                    snapshot.getVersion());
             if (tx != null) {
                 return tx;
+            }
+
+            Seat latest = bookingController.getSeatSnapshot(seatId);
+            if (latest == null || !"AVAILABLE".equalsIgnoreCase(latest.getStatus())) {
+                return null;
             }
             if (attempt < maxAttempts) {
                 Thread.sleep(25L * attempt);

@@ -1,5 +1,6 @@
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\app\Main.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\app\SimulatorDemo.java
+D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\app\Week7TableDemo.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\controller\BookingController.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\controller\FanController.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\controller\SimulatorController.java
@@ -31,6 +32,7 @@ D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\repository\StadiumRepositor
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\repository\TicketRepository.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\repository\TransactionRepository.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\test\SmokeTest.java
+D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\test\StressTestDemo.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\utilities\CsvCleaner.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\utilities\CsvSplitter.java
 D:\github\NHOM_04_LAB211_TicketBooking\src\main\java\utilities\FanIdNormalizer.java

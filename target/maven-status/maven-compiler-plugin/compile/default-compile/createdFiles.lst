@@ -2,6 +2,7 @@ model\fan\Fan.class
 view\SimulatorView.class
 view\BookingView.class
 model\ticket\Ticket.class
+test\StressTestDemo.class
 utilities\FanIdNormalizer.class
 app\Main.class
 model\seat\Seat.class
@@ -29,6 +30,7 @@ model\seat\SeatType.class
 model\invoice\Invoice.class
 utilities\CsvCleaner.class
 model\Stadium.class
+repository\SeatRepository$OptimisticUpdateResult.class
 repository\CsvRepository.class
 model\seat\Section.class
 app\SimulatorDemo.class

@@ -11,8 +11,7 @@ import repository.StadiumRepository;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.Callable;
 
 /**
  * T5 – StadiumController
@@ -24,19 +23,24 @@ public class StadiumController {
     private final SectionRepository sectionRepo;
     private final SeatRepository seatRepo;
     private final MatchRepository matchRepo;
-    private final Map<String, String> seatStatusCache;
 
     public StadiumController() {
-        this.stadiumRepo = new StadiumRepository();
-        this.sectionRepo = new SectionRepository();
-        this.seatRepo = new SeatRepository(System.getProperty("user.dir") + "/data/seats.csv");
-        this.matchRepo = new MatchRepository();
-        this.seatStatusCache = new ConcurrentHashMap<>();
+        this(new StadiumRepository(),
+                new SectionRepository(),
+                new SeatRepository(System.getProperty("user.dir") + "/data/seats.csv"),
+                new MatchRepository());
+    }
+
+    public StadiumController(StadiumRepository stadiumRepo,
+            SectionRepository sectionRepo,
+            SeatRepository seatRepo,
+            MatchRepository matchRepo) {
+        this.stadiumRepo = stadiumRepo;
+        this.sectionRepo = sectionRepo;
+        this.seatRepo = seatRepo;
+        this.matchRepo = matchRepo;
         try {
             this.seatRepo.autoRenumberSeats();
-            for (Seat seat : this.seatRepo.findAll()) {
-                this.seatStatusCache.put(seat.getSeatId(), seat.getStatus());
-            }
         } catch (IOException e) {
             System.out.println("[ERROR] Failed to auto-renumber seats: " + e.getMessage());
         }
@@ -141,68 +145,49 @@ public class StadiumController {
      */
     public Seat getSeatById(String seatId) {
         try {
-            for (Seat seat : seatRepo.findAll()) {
-                if (seat.getSeatId().equalsIgnoreCase(seatId)) {
-                    String cachedStatus = seatStatusCache.get(seatId);
-                    if (cachedStatus != null) {
-                        seat.setStatus(cachedStatus);
-                    }
-                    return seat;
-                }
-            }
-            return null;
+            return seatRepo.findById(seatId);
         } catch (IOException e) {
             return null;
         }
     }
 
     /**
-     * Mark seat as SOLD and persist.
+     * Baseline NO_LOCK update. Synchronization mechanisms wrap or replace this
+     * operation through methods below.
      */
     public boolean markSeatBooked(String seatId) {
-        AtomicBoolean changed = new AtomicBoolean(false);
-        seatStatusCache.compute(seatId, (id, currentStatus) -> {
-            if (!"AVAILABLE".equalsIgnoreCase(currentStatus)) {
-                return currentStatus;
-            }
-            changed.set(true);
-            return "SOLD";
-        });
-
-        if (!changed.get()) {
-            return false;
-        }
-
         try {
-            List<Seat> seats = seatRepo.findAll();
-            for (Seat s : seats) {
-                if (s.getSeatId().equalsIgnoreCase(seatId)) {
-                    s.setStatus(seatStatusCache.getOrDefault(seatId, s.getStatus()));
-                    break;
-                }
-            }
-            seatRepo.saveAll(seats);
-            return true;
+            return seatRepo.tryBookNoLock(seatId);
         } catch (IOException e) {
             System.out.println("[ERROR] Cannot update seat: " + e.getMessage());
             return false;
         }
     }
 
+    public SeatRepository.OptimisticUpdateResult markSeatBookedOptimistic(
+            String seatId, int expectedVersion) {
+        try {
+            return seatRepo.tryBookOptimistic(seatId, expectedVersion);
+        } catch (IOException e) {
+            System.out.println("[ERROR] Cannot update seat optimistically: " + e.getMessage());
+            return SeatRepository.OptimisticUpdateResult.NOT_FOUND;
+        }
+    }
+
+    public <T> T withSynchronizedBooking(Callable<T> bookingAction) throws Exception {
+        return seatRepo.withSynchronizedBooking(bookingAction);
+    }
+
+    public <T> T withFileLockedBooking(Callable<T> bookingAction) throws Exception {
+        return seatRepo.withFileLockedBooking(bookingAction);
+    }
+
     /**
      * Mark seat as AVAILABLE again (for cancellation).
      */
     public boolean releaseSeat(String seatId) {
-        seatStatusCache.put(seatId, "AVAILABLE");
         try {
-            List<Seat> seats = seatRepo.findAll();
-            for (Seat s : seats) {
-                if (s.getSeatId().equalsIgnoreCase(seatId)) {
-                    s.setStatus("AVAILABLE");
-                    seatRepo.saveAll(seats);
-                    return true;
-                }
-            }
+            return seatRepo.releaseSeat(seatId);
         } catch (IOException e) {
             System.out.println("[ERROR] " + e.getMessage());
         }
