@@ -5,6 +5,7 @@ import model.transaction.Transaction;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Repository for Transaction entity – reads/writes transactions.csv
@@ -12,13 +13,36 @@ import java.util.List;
 public class TransactionRepository {
 
     private final String filePath;
+    private final AtomicInteger idCounter;
 
     public TransactionRepository() {
         this.filePath = System.getProperty("user.dir") + "/data/transactions.csv";
+        this.idCounter = new AtomicInteger(loadMaxIdFromFile());
     }
 
     public TransactionRepository(String filePath) {
         this.filePath = filePath;
+        this.idCounter = new AtomicInteger(loadMaxIdFromFile());
+    }
+
+    /** Đọc file một lần duy nhất lúc khởi tạo để tìm số ID lớn nhất hiện có */
+    private int loadMaxIdFromFile() {
+        int max = 100000;
+        File file = new File(filePath);
+        if (!file.exists()) return max;
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Transaction t = Transaction.fromCsvLine(line);
+                if (t != null) {
+                    String digits = t.getTransactionId().replaceAll("[^0-9]", "");
+                    try { max = Math.max(max, Integer.parseInt(digits)); } catch (Exception ignored) {}
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("[WARN] Cannot read transactions for ID init: " + e.getMessage());
+        }
+        return max;
     }
 
     public List<Transaction> findAll() {
@@ -90,14 +114,11 @@ public class TransactionRepository {
         }
     }
 
-    /** Generate next transaction ID like TR1001, TR1002... */
+    /**
+     * Sinh transaction ID tiếp theo một cách thread-safe dùng AtomicInteger.
+     * Không đọc lại file → không bao giờ trùng dù nhiều thread gọi đồng thời.
+     */
     public String generateNextId() {
-        List<Transaction> all = findAll();
-        int max = 0;
-        for (Transaction t : all) {
-            String id = t.getTransactionId().replaceAll("[^0-9]", "");
-            try { max = Math.max(max, Integer.parseInt(id)); } catch (Exception ignored) {}
-        }
-        return "TR" + (max + 1);
+        return "TR" + idCounter.incrementAndGet();
     }
 }

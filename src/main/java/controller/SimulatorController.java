@@ -61,20 +61,26 @@ public class SimulatorController {
             executor.submit(() -> {
                 String fanId = fanIds.get(idx);
                 String seatId = seatIds.get(idx);
+                long startAt = System.currentTimeMillis();
                 try {
                     Transaction tx = executeBooking(mechanism, fanId, matchId, seatId);
+                    long finishAt = System.currentTimeMillis();
                     BookingResult res;
                     if (tx != null) {
-                        res = new BookingResult(fanId, matchId, seatId, true, tx.getTransactionId());
+                        res = new BookingResult(fanId, matchId, seatId, true, tx.getTransactionId(),
+                                null, startAt, finishAt);
                     } else {
-                        res = new BookingResult(fanId, matchId, seatId, false, null);
+                        res = new BookingResult(fanId, matchId, seatId, false, null,
+                                null, startAt, finishAt);
                     }
                     synchronized (lock) {
                         results.add(res);
                     }
                 } catch (Exception e) {
+                    long finishAt = System.currentTimeMillis();
                     synchronized (lock) {
-                        results.add(new BookingResult(fanId, matchId, seatId, false, null, e.getMessage()));
+                        results.add(new BookingResult(fanId, matchId, seatId, false, null,
+                                e.getMessage(), startAt, finishAt));
                     }
                 } finally {
                     latch.countDown();
@@ -154,20 +160,35 @@ public class SimulatorController {
         public final boolean success;
         public final String transactionId;
         public final String errorMessage;
+        /** Epoch ms khi thread bắt đầu booking */
+        public final long startAtMs;
+        /** Epoch ms khi booking hoàn tất (thành công hoặc thất bại) */
+        public final long finishedAtMs;
+        /** Thời gian xử lý (ms) */
+        public final long elapsedMs;
 
         public BookingResult(String fanId, String matchId, String seatId,
                 boolean success, String transactionId) {
-            this(fanId, matchId, seatId, success, transactionId, null);
+            this(fanId, matchId, seatId, success, transactionId, null, 0L, 0L);
         }
 
         public BookingResult(String fanId, String matchId, String seatId,
                 boolean success, String transactionId, String errorMessage) {
+            this(fanId, matchId, seatId, success, transactionId, errorMessage, 0L, 0L);
+        }
+
+        public BookingResult(String fanId, String matchId, String seatId,
+                boolean success, String transactionId, String errorMessage,
+                long startAtMs, long finishedAtMs) {
             this.fanId = fanId;
             this.matchId = matchId;
             this.seatId = seatId;
             this.success = success;
             this.transactionId = transactionId;
             this.errorMessage = errorMessage;
+            this.startAtMs = startAtMs;
+            this.finishedAtMs = finishedAtMs;
+            this.elapsedMs = finishedAtMs - startAtMs;
         }
 
         public boolean success() {

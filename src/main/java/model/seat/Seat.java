@@ -25,10 +25,8 @@ public class Seat {
     public static Seat fromCsvLine(String line) {
         if (line == null || line.isBlank()) return null;
         String[] parts = line.split(",");
-<<<<<<< HEAD
-        if (parts.length < 5) {
-            throw new IllegalArgumentException("Invalid seat CSV row: " + line);
-        }
+        if (parts.length < 5) return null;
+        if (parts[0].trim().equalsIgnoreCase("seatId")) return null; // skip header
         int parsedVersion = 0;
         if (parts.length >= 6 && !parts[5].isBlank()) {
             try {
@@ -39,11 +37,6 @@ public class Seat {
         }
         return new Seat(parts[0].trim(), parts[1].trim(), parts[2].trim(),
                 parts[3].trim(), parts[4].trim(), parsedVersion);
-=======
-        if (parts.length < 5) return null;
-        if (parts[0].trim().equalsIgnoreCase("seatId")) return null; // skip header
-        return new Seat(parts[0].trim(), parts[1].trim(), parts[2].trim(), parts[3].trim(), parts[4].trim());
->>>>>>> 8a2da6f7cccfcdcd82716edfea420f10115f7e5c
     }
 
     // Serialize Seat -> CSV line
