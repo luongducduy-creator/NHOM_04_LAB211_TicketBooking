@@ -31,6 +31,7 @@ utilities\CsvCleaner.class
 model\Stadium.class
 repository\CsvRepository.class
 model\seat\Section.class
+app\SimulatorDemo.class
 model\transaction\Transaction$PaymentMethod.class
 model\transaction\Transaction$Status.class
 utils\InputUtils.class
