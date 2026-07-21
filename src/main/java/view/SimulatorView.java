@@ -1,37 +1,97 @@
 package view;
 
 import controller.SimulatorController.BookingResult;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Renders the result of a {@link controller.SimulatorController} run as an ASCII table.
- * The view prints directly to System.out.
- */
 public class SimulatorView {
 
     /**
-     * Displays a list of BookingResult objects in a formatted table.
-     *
-     * @param results the simulation outcomes
+     * Hàm display cũ (để giữ tương thích với SimulatorDemo.java không bị lỗi compile)
      */
     public void display(List<BookingResult> results) {
+        displayDetails(results);
+    }
+
+    /**
+     * In chi tiết từng kết quả đặt vé (Đã tối ưu chuẩn lề & màu ANSI)
+     */
+    public void displayDetails(List<BookingResult> results) {
         if (results == null || results.isEmpty()) {
             System.out.println("[INFO] No simulation results to display.");
             return;
         }
-        String header = String.format("%-12s | %-12s | %-10s | %-8s | %-15s | %s",
-                "FanID", "MatchID", "SeatID", "Success", "TransactionID", "Error");
-        System.out.println(header);
-        System.out.println("-".repeat(header.length()));
+
+        StringBuilder sb = new StringBuilder();
+
+        // Header format
+        String headerFormat = "| %-12s | %-12s | %-10s | %-6s | %-15s | %-20s |\n";
+        String divider = "+--------------+--------------+------------+--------+-----------------+----------------------+\n";
+
+        sb.append(divider);
+        sb.append(String.format(headerFormat, "FanID", "MatchID", "SeatID", "Status", "TransactionID", "Error Message"));
+        sb.append(divider);
+
+        // Rows format
         for (BookingResult r : results) {
-            String row = String.format("%-12s | %-12s | %-10s | %-8s | %-15s | %s",
+            String status = r.success ? "YES" : "NO";
+            String rowStr = String.format(headerFormat,
                     r.fanId,
                     r.matchId,
                     r.seatId,
-                    r.success ? "YES" : "NO",
+                    status,
                     r.transactionId == null ? "-" : r.transactionId,
-                    r.errorMessage == null ? "" : r.errorMessage);
-            System.out.println(row);
+                    r.errorMessage == null ? "" : r.errorMessage
+            );
+
+            // Bọc màu ANSI sau khi đã format lề chuẩn
+            if (r.success) {
+                rowStr = rowStr.replace("YES", "\u001B[32mYES\u001B[0m");
+            } else {
+                rowStr = rowStr.replace("NO ", "\u001B[31mNO \u001B[0m");
+            }
+
+            sb.append(rowStr);
         }
+        sb.append(divider);
+
+        System.out.print(sb.toString());
+    }
+
+    /**
+     * BẢNG TỔNG HỢP (Dùng cho báo cáo & phân tích hiệu năng khi stress test)
+     */
+    public void displaySummary(String mechanism, int totalThreads, long totalTimeMs, List<BookingResult> results) {
+        if (results == null) return;
+
+        long successCount = results.stream().filter(r -> r.success).count();
+        long failCount = results.size() - successCount;
+        double throughput = totalTimeMs > 0 ? (results.size() * 1000.0 / totalTimeMs) : 0;
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n=====================================================================\n");
+        sb.append("                 SIMULATION SUMMARY REPORT                           \n");
+        sb.append("=====================================================================\n");
+        sb.append(String.format(" Locking Mechanism : %s\n", mechanism));
+        sb.append(String.format(" Total Threads     : %d\n", totalThreads));
+        sb.append(String.format(" Total Requests    : %d\n", results.size()));
+        sb.append(String.format(" Successful        : \u001B[32m%d\u001B[0m\n", successCount));
+        sb.append(String.format(" Failed            : \u001B[31m%d\u001B[0m\n", failCount));
+        sb.append(String.format(" Execution Time    : %d ms\n", totalTimeMs));
+        sb.append(String.format(" Throughput        : %.2f ops/sec\n", throughput));
+        sb.append("=====================================================================\n\n");
+
+        System.out.print(sb.toString());
+    }
+
+    public static void main(String[] args) {
+        List<BookingResult> demoResults = new ArrayList<>();
+
+        demoResults.add(new BookingResult("Fan001", "MatchA", "Seat12", true, "TX12345", null));
+        demoResults.add(new BookingResult("Fan002", "MatchA", "Seat12", false, null, "Double Booking Detected"));
+        demoResults.add(new BookingResult("Fan003", "MatchB", "Seat01", true, "TX12346", null));
+
+        SimulatorView view = new SimulatorView();
+        view.display(demoResults);
     }
 }
