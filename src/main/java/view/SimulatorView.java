@@ -23,39 +23,30 @@ public class SimulatorView {
             return;
         }
 
+        // Sắp xếp theo thời điểm hoàn tất → ai xong trước xếp trước
+        List<BookingResult> sorted = new java.util.ArrayList<>(results);
+        sorted.sort(java.util.Comparator.comparingLong(r -> r.finishedAtMs));
+
+        // Các huy hiệu để đánh dấu thứ hạng
+        String[] medals = { "\uD83E\uDD47", "\uD83E\uDD48", "\uD83E\uDD49", "4th", "5th" };
+
         StringBuilder sb = new StringBuilder();
-
-        // Header format
-        String headerFormat = "| %-12s | %-12s | %-10s | %-6s | %-15s | %-20s |\n";
-        String divider = "+--------------+--------------+------------+--------+-----------------+----------------------+\n";
+        String headerFormat = "| %-4s | %-10s | %-10s | %-6s | %-13s | %-9s |\n";
+        String divider     = "+------+------------+------------+--------+---------------+-----------+\n";
 
         sb.append(divider);
-        sb.append(String.format(headerFormat, "FanID", "MatchID", "SeatID", "Status", "TransactionID", "Error Message"));
+        sb.append(String.format(headerFormat, "Rank", "FanID", "SeatID", "Result", "TransactionID", "Time(ms)"));
         sb.append(divider);
 
-        // Rows format
-        for (BookingResult r : results) {
-            String status = r.success ? "YES" : "NO";
-            String rowStr = String.format(headerFormat,
-                    r.fanId,
-                    r.matchId,
-                    r.seatId,
-                    status,
-                    r.transactionId == null ? "-" : r.transactionId,
-                    r.errorMessage == null ? "" : r.errorMessage
-            );
-
-            // Bọc màu ANSI sau khi đã format lề chuẩn
-            if (r.success) {
-                rowStr = rowStr.replace("YES", "\u001B[32mYES\u001B[0m");
-            } else {
-                rowStr = rowStr.replace("NO ", "\u001B[31mNO \u001B[0m");
-            }
-
-            sb.append(rowStr);
+        for (int i = 0; i < sorted.size(); i++) {
+            BookingResult r = sorted.get(i);
+            String medal  = i < medals.length ? medals[i] : (i + 1) + "th";
+            String result = r.success ? "\u001B[32mOK\u001B[0m    " : "\u001B[31mFAIL\u001B[0m  ";
+            String txId   = r.transactionId == null ? "-" : r.transactionId;
+            sb.append(String.format("| %-4s | %-10s | %-10s | %s | %-13s | %9d |\n",
+                    medal, r.fanId, r.seatId, result, txId, r.elapsedMs));
         }
         sb.append(divider);
-
         System.out.print(sb.toString());
     }
 

@@ -4,9 +4,11 @@ import model.invoice.Invoice;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class InvoiceRepository {
     private final String filePath;
+    private final AtomicInteger idCounter;
 
     public InvoiceRepository() {
         this(System.getProperty("user.dir") + "/data/invoices.csv");
@@ -15,6 +17,28 @@ public class InvoiceRepository {
     public InvoiceRepository(String filePath) {
         this.filePath = filePath;
         initFile();
+        this.idCounter = new AtomicInteger(loadMaxIdFromFile());
+    }
+
+    private int loadMaxIdFromFile() {
+        int max = 1000;
+        File file = new File(filePath);
+        if (!file.exists()) return max;
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Invoice inv = Invoice.fromCsvLine(line);
+                if (inv != null) {
+                    String digits = inv.getInvoiceId().replaceAll("[^0-9]", "");
+                    if (!digits.isEmpty()) {
+                        try { max = Math.max(max, Integer.parseInt(digits)); } catch (NumberFormatException ignored) {}
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("[WARN] Cannot read invoices for ID init: " + e.getMessage());
+        }
+        return max;
     }
 
     private void initFile() {
@@ -74,19 +98,6 @@ public class InvoiceRepository {
     }
 
     public String generateNextInvoiceId() {
-        List<Invoice> list = findAll();
-        int max = 1000;
-        for (Invoice inv : list) {
-            String idStr = inv.getInvoiceId().replaceAll("[^0-9]", "");
-            if (!idStr.isEmpty()) {
-                try {
-                    int val = Integer.parseInt(idStr);
-                    if (val > max)
-                        max = val;
-                } catch (NumberFormatException ignored) {
-                }
-            }
-        }
-        return "INV" + (max + 1);
+        return "INV" + idCounter.incrementAndGet();
     }
 }

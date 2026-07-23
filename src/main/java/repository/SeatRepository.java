@@ -103,17 +103,13 @@ public class SeatRepository {
         try (BufferedReader reader = Files.newBufferedReader(filePath)) {
             String line;
             while ((line = reader.readLine()) != null) {
-<<<<<<< HEAD
                 if (line.isBlank() || line.startsWith("seatId,")) {
                     continue;
                 }
-                seats.add(Seat.fromCsvLine(line));
-=======
                 Seat seat = Seat.fromCsvLine(line);
-                if (seat != null) {  // skip header, dòng trống, dòng lỗi
+                if (seat != null) {
                     seats.add(seat);
                 }
->>>>>>> 8a2da6f7cccfcdcd82716edfea420f10115f7e5c
             }
         }
         return seats;
