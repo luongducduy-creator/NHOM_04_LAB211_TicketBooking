@@ -1,71 +1,75 @@
 package test;
 
+import controller.BookingController;
+import controller.SimulatorController;
 import controller.SimulatorController.BookingResult;
+import controller.SimulatorController.SyncMechanism;
+import controller.StadiumController;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import view.SimulatorView;
 
 public class StressTestDemo {
 
-    // Cấu hình số lượng Request và Thread chạy đồng thời
-    private static final int TOTAL_REQUESTS = 1000;
-    private static final int THREAD_POOL_SIZE = 100;
+    // Cấu hình tham số Stress Test
+    private static final int TOTAL_REQUESTS = 1000;  // 1,000 Yêu cầu đặt vé
+    private static final int THREAD_POOL_SIZE = 100; // 100 Threads chạy đồng thời
+    private static final String MATCH_ID = "M1";      // Mã trận đấu hợp lệ trong DB/CSV
 
-    public static void main(String[] args) throws InterruptedException {
-        System.out.println(">>> STARTING STRESS TEST SIMULATION...");
+    public static void main(String[] args) {
+        System.out.println("==================================================================");
+        System.out.println(">>> STARTING REAL STRESS TEST (" + TOTAL_REQUESTS + " REQUESTS - " + THREAD_POOL_SIZE + " THREADS) <<<");
+        System.out.println("==================================================================");
 
+        // 1. Khởi tạo các Controller & View từ hệ thống thật
+        StadiumController stadiumController = new StadiumController();
+        BookingController bookingController = new BookingController(stadiumController);
+        SimulatorController simulatorController = new SimulatorController(bookingController);
         SimulatorView view = new SimulatorView();
-        
-        // Danh sách chứa kết quả (Thread-safe List để nhiều thread cùng ghi vào không bị lỗi)
-        List<BookingResult> results = Collections.synchronizedList(new ArrayList<>());
 
-        // Công cụ điều phối Thread Pool và đồng bộ thời gian xuất phát
-        ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        CountDownLatch latch = new CountDownLatch(TOTAL_REQUESTS);
+        // 2. Chạy Stress Test lần lượt cho 3 cơ chế đồng bộ
+        runRealTest(simulatorController, view, SyncMechanism.SYNCHRONIZED);
+        runRealTest(simulatorController, view, SyncMechanism.FILE_LOCK);
+        runRealTest(simulatorController, view, SyncMechanism.OPTIMISTIC);
+
+        System.out.println("\n==================================================================");
+        System.out.println(">>> ALL STRESS TESTS COMPLETED SUCCESSFULLY! <<<");
+        System.out.println("==================================================================");
+    }
+
+    private static void runRealTest(SimulatorController simulatorController, 
+                                    SimulatorView view, 
+                                    SyncMechanism mechanism) {
+
+        System.out.println("\n------------------------------------------------------------------");
+        System.out.println(">>> Running Mechanism: " + mechanism.name() + " ...");
+        System.out.println("------------------------------------------------------------------");
+
+        // Chuẩn bị dữ liệu thật: 1,000 Fan tranh chấp khoảng 200 ghế thật (SEAT100 -> SEAT299)
+        List<String> fanIds = new ArrayList<>();
+        List<String> seatIds = new ArrayList<>();
+
+        for (int i = 1; i <= TOTAL_REQUESTS; i++) {
+            fanIds.add(String.format("FAN%04d", i));
+            // Tạo dải ghế chuẩn từ SEAT100 đến SEAT299 để có cạnh tranh đa luồng
+            seatIds.add("SEAT" + (100 + (i % 200))); 
+        }
 
         long startTime = System.currentTimeMillis();
 
-        // Giả lập 1,000 requests bắn vào hệ thống đồng thời
-        for (int i = 1; i <= TOTAL_REQUESTS; i++) {
-            final int requestId = i;
-            executor.submit(() -> {
-                try {
-                    // TODO: Khi Bảo & Duy xong Controller, mình sẽ gọi hàm đặt vé thật ở đây:
-                    // BookingResult result = controller.bookTicket(...);
-                    
-                    // --- GIẢ LẬP KẾT QUẢ ĐỂ TEST UI SUMMARY ---
-                    boolean isSuccess = (requestId % 3 != 0); // Giả lập: 66% thành công, 33% thất bại
-                    String fanId = String.format("Fan%04d", requestId);
-                    String seatId = "Seat" + (requestId % 50); // Cạnh tranh 50 ghế
-                    
-                    BookingResult result = new BookingResult(
-                        fanId, 
-                        "Match_VN_THAI", 
-                        seatId, 
-                        isSuccess, 
-                        isSuccess ? "TX_" + requestId : null, 
-                        isSuccess ? null : "Seat already booked"
-                    );
-                    
-                    results.add(result);
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-
-        // Chờ tất cả 1,000 requests hoàn thành
-        latch.await();
-        executor.shutdown();
+        // GỌI HÀM ĐẶT VÉ ĐA LUỒNG THẬT TỪ SIMULATOR CONTROLLER
+        List<BookingResult> results = simulatorController.runSimulation(
+                fanIds, 
+                MATCH_ID, 
+                seatIds, 
+                THREAD_POOL_SIZE, 
+                mechanism
+        );
 
         long endTime = System.currentTimeMillis();
-        long totalTimeTimeMs = endTime - startTime;
+        long totalTimeMs = endTime - startTime;
 
-        // In bảng tổng hợp Báo cáo hiệu năng (Summary Report)
-        view.displaySummary("OPTIMISTIC_LOCK (MOCK)", THREAD_POOL_SIZE, totalTimeTimeMs, results);
+        // In bảng báo cáo Summary chuẩn UI đẹp mắt
+        view.displaySummary(mechanism.name(), THREAD_POOL_SIZE, totalTimeMs, results);
     }
 }
