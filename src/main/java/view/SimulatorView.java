@@ -27,9 +27,7 @@ public class SimulatorView {
         List<BookingResult> sorted = new java.util.ArrayList<>(results);
         sorted.sort(java.util.Comparator.comparingLong(r -> r.finishedAtMs));
 
-        // Các huy hiệu để đánh dấu thứ hạng
-        String[] medals = { "\uD83E\uDD47", "\uD83E\uDD48", "\uD83E\uDD49", "4th", "5th" };
-
+        // Đánh dấu thứ hạng bằng số thông thường
         StringBuilder sb = new StringBuilder();
         String headerFormat = "| %-4s | %-10s | %-10s | %-6s | %-13s | %-9s |\n";
         String divider     = "+------+------------+------------+--------+---------------+-----------+\n";
@@ -40,11 +38,11 @@ public class SimulatorView {
 
         for (int i = 0; i < sorted.size(); i++) {
             BookingResult r = sorted.get(i);
-            String medal  = i < medals.length ? medals[i] : (i + 1) + "th";
+            String rankStr = String.valueOf(i + 1);
             String result = r.success ? "\u001B[32mOK\u001B[0m    " : "\u001B[31mFAIL\u001B[0m  ";
             String txId   = r.transactionId == null ? "-" : r.transactionId;
             sb.append(String.format("| %-4s | %-10s | %-10s | %s | %-13s | %9d |\n",
-                    medal, r.fanId, r.seatId, result, txId, r.elapsedMs));
+                    rankStr, r.fanId, r.seatId, result, txId, r.elapsedMs));
         }
         sb.append(divider);
         System.out.print(sb.toString());
